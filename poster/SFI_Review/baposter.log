@@ -1,0 +1,17 @@
+This is pdfTeX, Version 3.1415926-1.40.11 (MiKTeX 2.9) (preloaded format=pdftex 2014.5.13)  13 MAY 2014 12:52
+entering extended mode
+**C:/Users/Kevin/SkyDrive/Documents/Kevin/Kevin/UL/UL_NUIG_poster/Poster_Kevin/
+baposter.cls
+
+(C:/Users/Kevin/SkyDrive/Documents/Kevin/Kevin/UL/UL_NUIG_poster/Poster_Kevin/b
+aposter.cls
+! Undefined control sequence.
+l.110 \ProvidesClass
+                    {baposter}[2011/11/26 v2.0 baposter class]
+? 
+! Emergency stop.
+l.110 \ProvidesClass
+                    {baposter}[2011/11/26 v2.0 baposter class]
+End of file on the terminal!
+
+!  ==> Fatal error occurred, no output PDF file produced!
