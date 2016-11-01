@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2015)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: wavelets.aux
+A level-1 auxiliary file: images/fig_haar1d.tex.aux
+The style file: chicago.bst
+Database file #1: references.bib
+Warning--no volume for rit
+You've used 9 entries,
+            2861 wiz_defined-function locations,
+            674 strings with 6405 characters,
+and the built_in function-call counts, 6743 in all, are:
+= -- 529
+> -- 553
+< -- 0
++ -- 168
+- -- 192
+* -- 650
+:= -- 1250
+add.period$ -- 27
+call.type$ -- 9
+change.case$ -- 70
+chr.to.int$ -- 9
+cite$ -- 10
+duplicate$ -- 161
+empty$ -- 388
+format.name$ -- 216
+if$ -- 1242
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 10
+newline$ -- 48
+num.names$ -- 90
+pop$ -- 48
+preamble$ -- 1
+purify$ -- 125
+quote$ -- 0
+skip$ -- 170
+stack$ -- 0
+substring$ -- 348
+swap$ -- 52
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 170
+warning$ -- 1
+while$ -- 86
+width$ -- 0
+write$ -- 119
+(There was 1 warning)

@@ -1,0 +1,64 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Abramovich, Besbeas, and Sapatinas}{Abramovich
+  et~al.}{2002}]{abramovich2002}
+Abramovich, F., P.~Besbeas, and T.~Sapatinas (2002).
+\newblock Empirical bayes approach to block wavelet function estimation.
+\newblock {\em Computational Statistics and Data Analysis\/}~{\em 39\/}(4),
+  435--451.
+
+\bibitem[\protect\citeauthoryear{Andrews and McNicholas}{Andrews and
+  McNicholas}{2012}]{tmixtures}
+Andrews, J.~L. and P.~D. McNicholas (2012).
+\newblock Model-based clustering, classification, and discriminant analysis via
+  mixtures of multivariate t-distributions: The teigen family.
+\newblock {\em Statistics and Computing\/}~{\em 22\/}(5), 1021--1029.
+
+\bibitem[\protect\citeauthoryear{De~Rosa, Brenchley, and Roederer}{De~Rosa
+  et~al.}{2003}]{derosa2003}
+De~Rosa, S.~C., J.~M. Brenchley, and M.~Roederer (2003).
+\newblock Beyond six colors: A new era in flow cytometry.
+\newblock {\em Nature Medicine\/}~{\em 9\/}(1), 112--117.
+
+\bibitem[\protect\citeauthoryear{Dean and Nugent}{Dean and
+  Nugent}{2013}]{nugentdean}
+Dean, N. and R.~Nugent (2013).
+\newblock Clustering student skill set profiles in a unit hypercube using
+  mixtures of multivariate betas.
+\newblock {\em Advances in Data Analysis and Classification\/}~{\em 7\/}(3),
+  339--357.
+
+\bibitem[\protect\citeauthoryear{Donoho and Johnstone}{Donoho and
+  Johnstone}{1994}]{donohojohnstone1994}
+Donoho, D.~L. and I.~M. Johnstone (1994).
+\newblock Ideal spatial adaptation by wavelet shrinkage.
+\newblock {\em Biometrika\/}~{\em 81\/}(3), 425--455.
+
+\bibitem[\protect\citeauthoryear{Eudey}{Eudey}{1996}]{eudey1996}
+Eudey, T.~L. (1996).
+\newblock Statistical considerations in dna flow cytometry.
+\newblock {\em Statistical Science\/}~{\em 11\/}(4), 320--334.
+
+\bibitem[\protect\citeauthoryear{Gasparetto, Gentry, Sebti, O'Bryan,
+  Nimmanapalli, Blaskovich, Bhalla, Rizzieri, Haaland, Dunne, and
+  Smith}{Gasparetto et~al.}{2004}]{rit}
+Gasparetto, M., T.~Gentry, S.~Sebti, E.~O'Bryan, R.~Nimmanapalli, M.~A.
+  Blaskovich, K.~Bhalla, D.~Rizzieri, P.~Haaland, J.~Dunne, and C.~Smith
+  (2004).
+\newblock Identification of compounds that enhance the anti-lymphoma activity
+  of rituximab using flow cytometric high-content screening.
+\newblock {\em Journal of Immunology Methods\/}~(292), 59--71.
+
+\bibitem[\protect\citeauthoryear{Mallat}{Mallat}{1989}]{mallat89}
+Mallat, S.~G. (1989).
+\newblock Theory for multiresolution signal decomposition: the wavelet
+  representation.
+\newblock {\em IEEE Transactions on Pattern Analysis and Machine
+  Intelligence\/}~{\em 11\/}(7), 674--693.
+
+\bibitem[\protect\citeauthoryear{Nason}{Nason}{2008}]{nason}
+Nason, G.~P. (2008).
+\newblock {\em Wavelet methods in statistics with R}.
+\newblock Springer.
+
+\end{thebibliography}

@@ -1,0 +1,396 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage{natbib}
+\usepackage{tikz}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{bibentry}
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{caption}
+\usepackage{amssymb, amsmath, amsfonts, amsthm}
+\usepackage{subcaption}
+\usepackage{scalefnt}
+\usepackage{fancyhdr}
+\usepackage{framed}
+\usepackage{mathtools}
+\usepackage{chngcntr}
+\usepackage[ruled,noend,noline,slide]{algorithm2e}
+\usepackage[total={6.5in, 9.5in}]{geometry}
+\renewcommand\bibname{References}
+
+\setlength{\headheight}{15pt}
+\pagestyle{fancy}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+\fancyhf{}
+\rhead{\rightmark}
+\lhead{A Wavelet Approach to Gating}
+\rfoot{Page \thepage}
+
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+\counterwithin{equation}{section}
+
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\footrulewidth}{1pt}
+\providecommand{\floor}[1]{\left \lfloor #1 \right \rfloor }
+
+\setstretch{1.5}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\inputTikZ}[3]{% 
+	\scalefont{#2} 
+     \scalebox{#1}
+     {\input{#3}}
+     
+}
+
+\title{\bf A Wavelet Approach to Gating Flow Cytometry Data}
+\author{}
+\begin{document}
+
+\pagenumbering{gobble}
+
+\maketitle
+
+\newpage
+\pagenumbering{roman}
+
+\rhead{Abstract}
+\addcontentsline{toc}{section}{Abstract}
+\begin{abstract}
+\noindent
+This paper addresses the clustering of high-dimensional flow cytometry data using a unified statistical framework. To date little has been done to address the expert driven approach to the identification of homogeneous cell populations in flow cytometry data. This article attempts to go beyond the current standard for flow cytometry by developing an automated wavelet driven framework for clustering this highly complex data. Our approach builds on a solid statistical methodology to automate the process of cluster identification while not being restrictive in terms of the size, shape or orientation of sub-populations. Our methodology is applied to
+the commonly used Rituximab data \citep{rit}.
+
+\medskip
+\noindent
+{\bf Key Terms:} Clustering, Flow Cytometry, Wavelet, Gating.
+\end{abstract}
+
+\newpage
+\rhead{Authors}
+\addcontentsline{toc}{section}{Authors}
+\par \par \noindent {\bf Kevin Brosnan}
+\par \par \noindent Department of Mathematics and Statistics,
+\par \par \noindent University of Limerick,
+\par \par \noindent Limerick.
+\par \par \noindent Ireland.
+\par \par \noindent Email: kevin.c.brosnan@ul.ie
+
+\medskip \medskip
+\par \par \noindent {\bf Kevin Hayes}
+\par \par \noindent Department of Mathematics and Statistics,
+\par \par \noindent University of Limerick,
+\par \par \noindent Limerick.
+\par \par \noindent Ireland.
+\par \par \noindent Email: kevin.hayes@ul.ie
+
+\medskip \medskip
+\par \par \noindent {\bf Norma Bargary}
+\par \par \noindent Department of Mathematics and Statistics,
+\par \par \noindent University of Limerick,
+\par \par \noindent Limerick.
+\par \par \noindent Ireland.
+\par \par \noindent Email: norma.bargary@ul.ie
+
+\newpage
+\rhead{Contents}
+\tableofcontents
+
+\newpage
+\pagenumbering{arabic}
+\rhead{\rightmark}
+
+\section{Introduction}
+
+In the past ten years major advances have occurred in the technology and instruments used to record flow cytometry data, allowing fine cell analysis of up to twenty parameters \citep{derosa2003}. Investigators have traditionally relied on intuition rather than on standardized statistical inference in the analysis of flow cytometry data \citep{eudey1996}. The gating of flow cytometry data, involving the identification of homogeneous cell populations, is traditionally a manual process whereby a computer mouse is used to draw a grid around a ``cluster'' of points in a $2$-dimensional scatter plot. The increased volume and complexity of flow cytometry data boosts the demand for reliable statistical methods and accompanying software implementations to complete the analysis and draw meaningful conclusions from the data.
+
+\medskip
+
+Many statistical approaches have been used to address the clustering of high-dimensional data similar to that of flow cytometry data. Model-based clustering methods do not require that the number of clusters be specified in advance, instead model selection criteria such as the Bayesian information criteria, well known in the statistics literature, estimates the number of clusters. However, because these methods assume mixtures of Gaussian distributions, they still lack robustness. \cite{tmixtures} adapted model-based clustering approaches to mixtures of t-distributions to develop non-Gaussian clusters in cytometry data. The t-distributions have been implemented in the R package flowClust which provides freely available software for the automated gating of flow cytometry data. \cite{nugentdean} built upon this methodology and defined all data to lie in the unit hypercube allowing calculations to be simplified and analysis to be computationally efficient. While these approaches improve the clustering fit the restrictions of cluster shape, size and orientation is impractical for use with cytometry data. It is the intention of this article to provide an improved alternative which abides by statistical methodology and provides reproducible, precise and clinically satisfactory clustering solutions.
+
+\medskip
+
+\textbf{Our approach and the benefits...}
+
+\medskip
+The remainder of this paper develops our methodology from the basis of wavelet functions up to the clustering of the high dimensional data. In Section 2, the Discrete Wavelet Transform is introduced and in particular the Haar wavelet which will be used throughout this paper. Section 3 introduces the block wavelet thresholding approach utilised for the identification of cluster boundaries, while Section 4 applies the topics discussed in Section 2 and Section 3 to the flow cytometry data. Section 5 provides a concise view of the results produced by our approach to the clustering of flow cytometry and identifies areas that still require further work.
+
+\newpage
+\section{The Discrete Wavelet Transform}
+\subsection{Preliminaries}
+Let $g \in L^2(\mathbb{R})$ be a fixed but unknown function. Given the values $g_i=g(i)$ for $i=1,2, \ldots, N$, an orthogonal wavelet series approximation to the signal $g(t)$ is of the form
+\begin{equation}
+g(t) \approx \sum_{k=1}^{p_{J}} s_{J,k} \phi_{J,k}(t) + \sum_{j=1}^J\sum_{k=1}^{q_{j}} d_{j,k}\psi_{j,k}(t).
+\label{eq:dwt1d}
+\end{equation}
+
+\noindent
+The function $\phi_{J,k}(t) = 2^{-J/2} \phi(\frac{t-2^{J}k}{2^{J}})$ is a scaled and translated version of the basic father wavelet $\psi$. (The mother and father wavelets are specific to the choice of wavelet function). Similarly, the function $\psi_{j,k}(t) = 2^{-j/2} \psi(\frac{t-2^{j}k}{2^{j}})$ is a scaled and translated version of the basic mother wavelet $\psi$. The indices specify the $k^{th}$ element of the $j^{th}$ multi-resolution component or scale. Simply put,  the $s_{J,k}$ terms represent the smooth wavelet coefficients used to estimate the given function at resolution level $J$, while the $d_{j,k}$ terms represent the detail coefficients at resolution level $j$. 
+
+\medskip
+The values of $p_J, q_J, \ldots, q_1$ depend on the value of $N$ and are determined by the fitting algorithm proposed by \cite{mallat89}. If $N$ is divisible by $2^J$ then $p_J = N/2^J$, and represents the number of smooth coefficients at resolution level $J$. Also, $q_j=N/2^j$, and represents the number of detail coefficients at resolution level $j$, for resolution levels $j=1,2,\ldots, J$. Regardless of the value of $N$, it is always the case that
+$$p_J + \sum_{j=1}^J q_j = N,$$
+and the wavelet approximation is always based on $N$ parameters. The parameters are combined to form an $N \times 1$ vector of wavelet coefficients represented here by
+\begin{equation}\label{eq:betacoef}
+\bm{\beta} = (s_{J,1}, \ldots, s_{J,p_{J}}, d_{J,1}, \ldots, d_{J,q_{J}}, \ldots, d_{1,1}, \ldots, d_{1,q_{1}})^{\prime}.
+\end{equation}
+
+\medskip
+The discrete wavelet transform maps the original input data vector to a vector of wavelet coefficients $\bm{\beta}$ by using a series of averaging and differencing calculations between successive elements of the data vector. The vector $\bm{\beta}$ is thus calculated as the discrete wavelet transform of the unknown function vector $\mathbf{g}$, which can be written as $\bm{\beta} = \mathbf{W} \mathbf{g}$ where $\mathbf{g} = (g_{1}, g_{2}, \dots, g_{N})^{\prime}$ and $\mathbf{W}$ is an $N \times N$ orthonormal wavelet transform matrix which is wavelet family specific. The vector $\mathbf{g}$ can be reconstructed using the inverse discrete wavelet transformation given by $\mathbf{W}^{\prime} \bm{\beta} = \mathbf{W}^{\prime} \mathbf{W} \mathbf{g} = \mathbf{g}.$
+
+\medskip
+In general the value of $\mathbf{g}$ is unknown and only the value of the observed data $\mathbf{y} = (y_{1}, y_{2}, \dots, y_{N})^{\prime}$ is known which is represented as $y_{i} = g_{i} + \epsilon_{i}$ where $\epsilon_{1}, \epsilon_{2}, \ldots, \epsilon_{N}$ are independent and identically distributed normal random variables with mean zero and standard deviation $\sigma^{2}$. The maximum likelihood estimator of $\bm{\beta}$ is given by $\hat{\bm{\beta}} = (\mathbf{W}\mathbf{W}^{\prime})^{-1} \mathbf{W} \mathbf{y} = \mathbf{W} \mathbf{y}.$ Since $\mathbf{W}$ is an orthonormal matrix $\hat{\bm{\beta}} = (\hat{\beta}_{1}, \hat{\beta}_{2}, \dots, \hat{\beta}_{N})^{\prime}$ is a vector of independent normal random variables with $\mathrm{E}[\hat{\beta}_{i}] = \beta_{i}$ and $\mathrm{Var}[\hat{\beta}_{i}] = \sigma^{2}$.
+
+\subsection{The one-dimensional Haar Wavelet}\label{sec:Haar}
+The Haar wavelet is a square wave defined on compact support and is the only symmetric orthogonal wavelet. The Haar father wavelet $\phi$ is defined as 
+$$\phi(t) = \begin{cases} 1, \:\:\: \text{if } 0 \leq t < 1\\ 0, \:\:\: \text{otherwise} \end{cases}$$
+and the corresponding mother wavelet $\psi$ is defined as
+$$\psi(t) = \begin{cases} \phantom{0}\ 1, \:\:\: \text{if } 0 \leq t < 0.5\\ -1, \:\:\: \text{if } 0.5 \leq t < 1\\ \phantom{0}\ 0, \:\:\: \text{otherwise.} \end{cases}$$
+The father and mother wavelet for the one-dimensional Haar wavelet function are shown in figure \ref{fig:haar1d}.
+
+\begin{figure}[ht]
+\centering
+\include{images/fig_haar1d.tex}
+\caption{Father and Mother Wavelet for Haar Wavelet}
+\label{fig:haar1d}
+\end{figure}
+
+
+\medskip
+In the one-dimensional case the discrete Haar wavelet transform coefficients can be calculated as
+
+\begin{align*}
+& s_{j,k} = 2^{-j/2} \sum\limits^{2^{j}}_{i=1} y_{2^{j}k- (i-1)} \\
+& \text{and} \\
+& d_{j,k} = 2^{-j/2} \sum\limits^{2^{j}}_{i=1} \mathrm{sgn}(i - 2^{j-1} - 0.5) \phantom{-} y_{2^{j}k- (i-1)}
+\end{align*}
+\noindent
+where $\mathbf{y}$ is the input vector that requires transformation. $\hat{\bm{\beta}}$ is thus formulated as shown in equation \ref{eq:betacoef} from these formulae.  
+
+\subsection{The two-dimensional Haar Wavelet}\label{sec:2dHaar}
+Let 
+$$\mathbf{Y} = \left[ \begin{array}{cccc} 
+y_{11} & y_{12} & \cdots & y_{1N} \\
+y_{21} & y_{22} & \cdots & y_{2N} \\
+\vdots & \vdots & \cdots & \vdots \\
+y_{N1} & y_{N2} & \cdots & y_{NN} 
+\end{array} \right] 
+$$
+be an $N \times N$ matrix representing the data in an image format in $\mathbb{R}^2$. The image is constructed of $N$ rows and $N$ columns, representing the $N \times N$ pixels or grid cells in the image. While in theory and practice it is not required to have a square matrix, for the case of flow cytometry the image will always be square. Also, the value of $N$ will always be dyadic for flow cytometry, meaning that the deepest resolution level can be calculated as $J = \log_{2}{N}$.  
+
+\medskip
+
+In this setting the structure of the $N \times N$ wavelet coefficient matrix $\bm{\hat{\beta}}$ contains a smooth coefficient sub-matrix $s_{J,m,n}$ at the deepest resolution level $J$ along with horizontal, vertical and diagonal detail coefficient sub-matrices $d^{h}_{j,m,n}$, $d^{v}_{j,m,n}$ and $d^{d}_{j,m,n}$ at resolution levels $j = {1,2,\dots,J}$. Each of the sub-matrices are square with dimension $\frac{N}{2^{j}} \times \frac{N}{2^{j}}$, which results in  a single element component when $j = J$. The smooth coefficients can be interpreted as representing the low frequency parts of the true signal, while the detail coefficients represent the high-frequency parts in the three directions (horizontal, vertical and diagonal) at progressively finer scale deviations. The $\bm{\hat{\beta}}$ matrix of wavelet coefficients then takes the form demonstrated in figure \ref{fig:DWT_Matrix}.
+
+\begin{figure}[ht]
+    \centering
+	\input{images/DWT_Matrix.pdf_tex}
+    \caption{two-dimensional DWT matrix for $J = 3$}
+    \label{fig:DWT_Matrix}
+\end{figure}
+
+\medskip
+Two-dimensional wavelets are constructed by taking the direct product of two one-dimensional wavelets, one each for the horizontal and vertical orientations. The two-dimensional wavelets are generated from combinations of the \textit{father} and \textit{mother} wavelets used in the one-dimensional wavelet structure resulting in four wavelets in the two-dimensional setting. The formulation of each of the four wavelet functions are: $\Phi(x,y)=\phi_{h}(x) \times \phi_{v}(y)$, $\Psi^{v}(x,y)=\psi_{h}(x) \times \phi_{v}(y)$, $\Psi^{h}(x,y)=\phi_{h}(x) \times \psi_{v}(y)$ and $\Psi^{d}(x,y)=\psi_{h}(x) \times \psi_{v}(y)$.
+
+\medskip
+A modified version of Mallat's Pyramid Algorithm can be utilised to generate the matrix of $\bm{\hat{\beta}}$ coefficients in the two-dimensional setting. The process requires \textit{vertically} applying low-pass and high-pass filters to each column of the data matrix and subsequently \textit{horizontally} applying the low-pass and high-pass filters to each row of the formulated matrix. A one level two-dimensional discrete wavelet transform decomposition can be represented in matrix notation as
+$\bm{\hat{\beta}} = \mathbf{W}_{h} \mathbf{Y} \mathbf{W}^{T}_{v}$
+where $\mathbf{W}_{h}$ and $\mathbf{W}_{v}$ are orthogonal wavelet matrix operators. An iterative procedure is applied to obtain the resolution level $J$ required for the analysis being carried out. The process for a two-level two-dimensional discrete wavelet transform decomposition is further outlined in figure \ref{fig:DWT_Process}.
+
+\medskip
+Due to the simplicity provided by the Haar wavelet the discrete wavelet transform can be reduced to the following set of equations
+\begin{align*}
+& s_{j,m,n} = 2^{-j} \sum\limits^{2^j}_{i = 1} \sum\limits^{2^j}_{k = 1} y_{a(2m), b(2n)} \\
+& d^{h}_{j,m,n} = 2^{-j} \sum\limits^{2^j}_{i = 1} \sum\limits^{2^{j-1}}_{k = 1} [y_{a(2m), b(2n-1)} - y_{a(2m), b(2n)}]\\
+& d^{v}_{j,m,n} = 2^{-j} \sum\limits^{2^{j-1}}_{i = 1} \sum\limits^{2^{j}}_{k = 1} [y_{a(2m-1), b(2n)} - y_{a(2m), b(2n)}]\\
+& d^{d}_{j,m,n} = 2^{-j} \sum\limits^{2^{j-1}}_{i = 1} \sum\limits^{2^{j-1}}_{k = 1} [y_{a(2m - 1), b(2n - 1)} - y_{a(2m),b(2n-1)} - y_{a(2m - 1), b(2n)} + y_{a(2m), b(2n)}] 
+\end{align*}
+where 
+\begin{equation*}
+  \begin{cases}
+    a(m) = 2^{j-1} m - (i -1),\\
+    b(n) = 2^{j-1} n - (k - 1)
+  \end{cases}
+\end{equation*}
+and $j$ defines the resolution level of interest.
+
+\begin{figure}[ht]
+    \centering
+    \def\svgwidth{\columnwidth}
+    \input{images/DWT_Process.pdf_tex}
+    \caption{two-dimensional DWT process for $J=2$}
+    \label{fig:DWT_Process}
+\end{figure}
+
+\medskip
+This formulation of the two-dimensional discrete Haar wavelet transform allows the direct calculation of detail and smooth coefficients at any level $j$. In contrast to Mallat's Pyramid Algorithm this formulation does not require the calculation of unused smooth coefficients at levels $j = {1, \ldots, J-1}$, where $J$ is the resolution level of interest. This formulation aids in the speed, memory usage and efficiency of computing the discrete wavelet transform for a particular level $j$.
+
+\clearpage
+\section{Wavelet Block Thresholding}
+To date wavelet methods have proven to be a proficient tool in function estimation through the thresholding of single terms of the empirical wavelet coefficients. However, in the context of clustering it is more efficient to threshold groups of empirical wavelet coefficients simultaneously. \cite{abramovich2002} states that this block thresholding approach provides asymptotic optimality and better mean squared error performance than the standard term-by-term implementation.
+
+\medskip
+Wavelet thresholding is a severe process annihilating all coefficients below a pre-defined threshold $\lambda$ to zero and retaining all other coefficients as is. The thresholding function is defined by \cite{donohojohnstone1994} as 
+
+\begin{equation}
+\delta^{T}_{\lambda}(t) = 
+  \begin{cases}
+      \phantom{0}0, & \text{ if }|t| \leq \lambda \\
+      \phantom{0}t, & \text{ if }|t| > \lambda.
+  \end{cases}
+\label{eq:thresholding}
+\end{equation}
+
+The thresholding rule allows large coefficients to dominate the signal or image. This allows the detection of sharp changes in averages and differences which equate to the boundaries of clusters within the data. The distinct advantages of block thresholding is that spurious coefficients are not retained but rather only coefficients with significant neighbours. In the flow cytometry setting this removes the identification of single data points as a single cluster. While this is not generally an issue the number of defined clusters can be reduced if a requirement of at least two data points is needed to form a single sub-population. As such this paper focuses solely on the thresholding rule and the large coefficients which dominate the signal or image.
+
+\subsection{The one-dimensional case}
+In the case with no thresholding the unknown function $g(t)$ is approximated using all available wavelet coefficients as shown in equation \ref{eq:dwt1d}. The term-by-term thresholding approach estimates the unknown function $g(t)$ as a linear combination of the significant wavelet coefficients,
+\begin{equation}
+g(t) \approx \sum_{k=1}^{p_{J}} s_{J,k} \phi_{J,k}(t) + \sum_{j=1}^J\sum_{k=1}^{q_{j}} d_{j,k}\psi_{j,k}(t) \; \delta^{T}_{\lambda}(|d_{j,k}|),
+\label{eq:termbyterm1d}
+\end{equation}
+where $\delta^{T}_{\lambda}$ is the threshold function defined in equation \ref{eq:thresholding}.
+
+\medskip
+In contrast, block thresholding splits each resolution level of coefficients into a number of blocks each of size $\ell$ with the $b$th block at a particular resolution level $j$ being $\mathcal{B}_{j, b}$ and $b_{j}$ being the number of blocks at level $j$. The thresholding is now applied to blocks of wavelet coefficients rather than individual coefficients, \cite{nason} suggests that a very `narrow' feature such as a jump-discontinuity can produce more than one large coefficient all located in neighbouring coefficients.
+
+\medskip
+The quantity of interest from each block is the average energy across the coefficients of that block. It is expressed as
+\begin{equation}
+B_{j,b} = \ell^{-1} \sum\limits_{k \in \mathcal{B}_{j,b}} d^{2}_{j,k}
+\label{eq:blockenergy1d}
+\end{equation}
+where $B_{j,b}$ is the average energy for the $b$th block in resolution level $j$. The block thresholding procedure is formulated as
+\begin{equation}
+g(t) \approx \sum\limits^{p_{J}}_{k = 1} s_{J,k} \phi_{J,k}(t) + \sum\limits^{R}_{j = 1} \sum\limits^{b_{j}}_{b = 1} \left\{ \sum\limits_{k \in \mathcal{B}_{j,b}} d_{j,k}\psi_{j,k}(t) \right\} \delta^{T}_{\lambda_{j}} (B_{j,b})
+\label{eq:block1d}
+\end{equation}
+where $R$ is the primary resolution level up to which the thresholding is applied and $\lambda_{j}$ is the threshold value at resolution level $j$. The block length $\ell$ and the primary resolution level $R$ are directly related and throughout this paper $\ell$ will be set to $2$ and thresholding will be applied to coefficients up to $R = J - 1$. The selection of the threshold value $\lambda_{j}$ is of key importance and this is discussed in section \ref{sec:lambda}.
+
+\subsection{The two-dimensional case}
+The two-dimensional block thresholding approach is a simple adaption of the one-dimensional formulation. The term-by-term thresholding approach for a two-dimensional system is an extension of the one-dimensional case and the image can be reproduced using
+\begin{equation}
+\begin{split}
+g(x,y) \approx \sum\limits_{m,n} s_{J, m, n} \Phi_{J,m,n}(x,y) + \sum\limits^{J}_{j = 1} \sum\limits_{m,n} d^{h}_{j,m,n} \Psi^{h}_{j,m,n} (x,y) \delta^{T}_{\lambda}(|d^{h}_{j,m,n}|) \\
++ \sum\limits^{J}_{j = 1} \sum\limits_{m,n} d^{v}_{j,m,n} \Psi^{v}_{j,m,n} (x,y) \delta^{T}_{\lambda}(|d^{v}_{j,m,n}|) + \sum\limits^{J}_{j = 1} \sum\limits_{m,n} d^{d}_{j,m,n} \Psi^{d}_{j,m,n} (x,y) \delta^{T}_{\lambda}(|d^{d}_{j,m,n}|).
+\end{split}
+\label{eq:termbyterm2d}
+\end{equation}
+
+\medskip
+The block thresholding follows a similar extension of the one-dimensional case. The blocks in a two-dimensional setting represent $\ell \times \ell$ blocks of coefficients at a particular resolution level, where $\ell$ is still the block length described earlier. Let $\mathcal{B}^{\alpha}_{j,b}$ be the $b$th block at resolution level $j$ in orientation $\alpha$, where $\alpha \in \{h,v,d\}$. The number of blocks at each resolution level $j$ is still defined as $b_{j}$ given that the number of coefficients contained at a particular level $j$ is constant across orientation $\alpha$. Thus the average block energy is
+\begin{equation}
+B^{\alpha}_{j,b} = \ell ^{-2} \sum\limits_{m,n \in \mathcal{B}^{\alpha}_{j,b}} (d^{\alpha}_{j,m,n})^{2}.
+\label{eq:blockenergy2d}
+\end{equation}
+The block thresholding equation follows directly as before and is formulated as
+\begin{equation}
+\begin{split}
+g(x,y) \approx \sum\limits_{m,n} s_{J,m,n} \Phi_{J,m,n}(x,y) + \sum\limits^{R}_{j = 1} \sum\limits^{b_{j}}_{b = 1} \left(  \sum\limits_{m,n \in \mathcal{B}^{h}_{j,b}} d^{h}_{j,m,n} \Psi^{h}_{j,m,n}(x,y) \delta^{T}_{\lambda^{h}_{j}}(B^{h}_{j,b}) \right) \\
++ \sum\limits^{R}_{j = 1} \sum\limits^{b_{j}}_{b = 1} \left(  \sum\limits_{m,n \in \mathcal{B}^{v}_{j,b}} d^{v}_{j,m,n} \Psi^{v}_{j,m,n}(x,y) \delta^{T}_{\lambda^{v}_{j}}(B^{v}_{j,b}) \right) \\
++ \sum\limits^{R}_{j = 1} \sum\limits^{b_{j}}_{b = 1} \left(  \sum\limits_{m,n \in \mathcal{B}^{d}_{j,b}} d^{d}_{j,m,n} \Psi^{d}_{j,m,n}(x,y) \delta^{T}_{\lambda^{d}_{j}}(B^{d}_{j,b}) \right)
+\end{split}
+\label{eq:block2d}
+\end{equation}
+where $R$ is the primary resolution level $J - 1$ as before, $\ell = 2$ forming $2 \times 2$ blocks and $\lambda^{\alpha}_{j}$ is the threshold value at orientation $\alpha$ in resolution level $j$, which is detailed in section \ref{sec:lambda}. 
+
+\subsection{Threshold Value}\label{sec:lambda}
+\textbf{$\lambda_{j}$}
+
+\newpage
+\section{Application to Flow Cytometry}
+In general a flow cytometer produces a matrix $\mathbf{Y}$ of dimension $N \times p$ after recording the passing of $N$ cells through the laser beam and taking $p$ measurements on each individual cell. The matrix takes the form
+\begin{equation*}
+	\mathbf{Y} =
+ 		\begin{bmatrix}
+  			y_{11} & y_{12} & \dots & y_{1p} \\
+  			y_{21} & y_{22} & \dots & y_{2p} \\
+  			\vdots  & \vdots & & \vdots \\
+  			y_{N1} & y_{N2} & \dots & y_{Np}
+ 		\end{bmatrix}
+\end{equation*}
+where $y^{(i)}_{p} = \{y_{i1}, y_{i2}, \dots, y_{ip}\}$ relates to the $i^{th}$ row of $\mathbf{Y}$, the $p$ recordings taken on a single cell observation. In general, the analysis is carried out on pairs of measured variables and as such the matrix analysed at any given time is simplified to
+\begin{equation*}
+  \tilde{\mathbf{Y}} = 
+    \begin{bmatrix}
+      y_{11} & y_{12} \\
+      y_{21} & y_{22} \\
+      \vdots & \vdots \\
+      y_{N1} & y_{N2} 
+    \end{bmatrix}
+\end{equation*}
+where the columns can relate to any two variables of interest.
+
+\medskip
+The rituximab data \citep{rit} will be utilised to provide an application of the proposed method to real cytometry data. For this paper the three variables to be used are $FSC.H$, $SSC.H$ and $FL1.H$, however the method is applicable to all pairs of cytometry variables available in the rituximab data set.
+
+\subsection{Pre-Processing}
+To apply a two-dimensional wavelet transform to the data, an $N \times N$ matrix $\mathbf{X}$ is required. Given the $10$-bit arithmetic property of the flow cytometry data, a transformation of the data to sit on a lattice grid is possible. This produces a $1024 \times 1024$ matrix which represents the possible integer values $[ 0, 1023 ]$ of the measurement values, where each $\mathbf{X}_{ij}$ relates to the count of cells with $y^{(k)}_{2} = (i - 1, j - 1)$.
+
+\subsection{Discrete Wavelet Transform}
+$\mathbf{X}$ is then transformed using the discrete Haar wavelet transform discussed in section \ref{sec:2dHaar}. When using wavelets as a clustering or edge-detection method it is best to utilise the entire range of resolution levels possible as the detail levels provide information about shifts from peaks to valleys in the data. As such the maximum resolution level possible for $\mathbf{X}$ is $\log_{2}1024 = 10$, resulting in a single element smooth matrix at $j = 10$ and detail matrices at $j = \{10, 9, \ldots, 1\}$. 
+
+\subsection{Block Wavelet Thresholding}
+
+\subsection{Inverse Discrete Wavelet Transform}
+
+\subsection{Cluster Identification}
+
+\newpage
+\section{Results \& Conclusions}
+
+
+\newpage
+\rhead{References}
+\addcontentsline{toc}{section}{References}
+\bibliography{references}
+\bibliographystyle{chicago}
+
+\newpage
+\rhead{Appendix}
+\addcontentsline{toc}{section}{Appendix}
+\section*{Appendix}
+\addcontentsline{toc}{subsection}{A: one-dimensional Haar DWT Formulae}
+\subsection*{Appendix A: one-dimensional Haar DWT Formulae}\label{App:DWT1d}
+Let $Y = (y_{1}, y_{2}, \ldots, y_{N})^{\prime}$ be the original signal of length $N$ that requires transformation. The goal is to compute a $J$-level Wavelet decomposition of $Y$ into a vector of $N$ wavelet coefficients $\bm{\beta}$.
+
+\noindent
+The general formula for the smooth coefficients $s_{j,k}$ stems from the following:
+$$s_{1,1} = \frac{1}{\sqrt{2}}(y_{1} + y_{2}),$$
+$$s_{1,2} = \frac{1}{\sqrt{2}}(y_{3} + y_{4}) \text{ and}$$
+$$s_{1,N/2} = \frac{1}{\sqrt{2}}(y_{N-1} + y_{N}).$$
+Thus the general case for $j=1$ can be written as
+$$s_{1,k} = \frac{1}{\sqrt{2}}(y_{2k-1} + y_{2k}) = \frac{1}{\sqrt{2}} \sum\limits^{2k}_{i = 2k - 1} y_{i} = \frac{1}{\sqrt{2}} \sum\limits^{2}_{i = 1} y_{2k - (i - 1)}.$$
+Following on from this the smooth coefficients at resolution level $2$ can be written as
+$$s_{2,k} = \frac{1}{\sqrt{2}} (s_{1, 2k - 1} + s_{1, 2k}).$$
+Utilising the formulae generated for $s_{1, k}$, the formulae for $s_{2,k}$ can be written in terms of the original input vector $Y$ as
+$$s_{2,k} = \frac{1}{\sqrt{2}} \left(\frac{1}{\sqrt{2}} \sum\limits^{2}_{i = 1} y_{4k - 2 - (i - 1)} + \frac{1}{\sqrt{2}} \sum\limits^{2}_{i = 1} y_{4k - (i - 1)} \right) = \frac{1}{2} \sum\limits^{4}_{i = 1} y_{4k - (i - 1)}.$$
+A continuation of the above for $j = \{3, 4, \ldots \}$ results in the general formula for all $j, k \in \mathbb{N}$ given as
+$$s_{j,k} = 2^{-j/2} \sum\limits^{2^{j}}_{i=1} y_{2^{j}k- (i-1)}.$$
+
+\noindent
+In a similar fashion the detail coefficient terms $d_{j,k}$ can be formulated. Starting at the first resolution level $j = 1$, then
+$$d_{1,k} = \frac{1}{\sqrt{2}} (y_{2k-1} - y_{2k}) = \frac{1}{\sqrt{2}} \sum\limits^{2}_{i = 1} \mathrm{sgn}\left(i - \frac{3}{2}\right) \phantom{-} y_{2k - (i - 1)}.$$
+The detail coefficients at resolution level $2$ are calculated as the paired successive differences of the smooth coefficients at resolution level $1$, that is
+$$d_{2,k} = \frac{1}{\sqrt{2}} (s_{1, 2k-1} - s_{1, 2k}) = \frac{1}{\sqrt{2}} \sum\limits^{4}_{i = 1} \mathrm{sgn}\left(i - \frac{5}{2}\right) \phantom{-} y_{4k - (i - 1)}.$$
+A continuation of the above for $j = \{3, 4, \ldots \}$ results in the general formula for all $j, k \in \mathbb{N}$ given as
+$$d_{j,k} = 2^{-j/2} \sum\limits^{2^{j}}_{i=1} \mathrm{sgn}\left(i - 2^{j-1} - \frac{1}{2}\right) \phantom{-} y_{2^{j}k- (i-1)}.$$
+
+\newpage
+\addcontentsline{toc}{subsection}{B: two-dimensional Haar DWT Formulae}
+\subsection*{Appendix B: two-dimensional Haar DWT Formulae}\label{App:DWT2d}
+The construction of general case formulae for the two-dimensional Haar wavelet follows from the one-dimensional case. The one-dimensional case focused on the averaging and differencing of successive elements of the input vector $Y$, the two-dimensional case focuses on the averaging and differecing of $2 \times 2$ blocks within the input matrix $\mathbf{Y}$, which is of dimension $M \times N$.
+
+\noindent
+The smooth coefficients $s_{j,m,n}$ at the first resolution level are calculated as
+$$s_{1,m,n} = \frac{1}{2} \sum\limits^{2}_{i = 1} \sum\limits^{2}_{k = 1} y_{2m - (i-1), 2n - (i -1)},$$
+this is simply an adaption of the one-dimensional case described in Appendix A over the matrix elements.
+The smooth coefficients at $j = 2$ follow as before as
+$$s_{2,m,n} = \frac{1}{2} \sum\limits^{2}_{i = 1} \sum\limits^{2}_{k=1} s_{1, 2m - (i - 1), 2n - (i - 1)} = \frac{1}{4} \sum\limits^{4}_{i = 1} \sum\limits^{4}_{k = 1} y_{4m - (i-1), 4n - (i - 1)}.$$
+A continuation of the above for $j = \{3, 4, \ldots \}$ results in the general formula for all $j, m, n \in \mathbb{N}$ given as
+$$s_{j,m,n} = 2^{-j} \sum\limits^{2^{j}}_{i = 1} \sum\limits^{2^{j}}_{k = 1} y_{2^{j}m - (i - 1), 2^{j}n - (i - 1)}.$$
+\end{document}
