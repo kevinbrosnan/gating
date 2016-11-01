@@ -22,7 +22,7 @@ mrf_gating <- function(x, min = 0, max = 1023) {
 
   # Identify the groups and return to data frame format
   groups <- unmake_grid(x = groups.grid, original = x, min = min, max = max)
-  groups <- NULL
+
   # Output to return to the user
   output <- structure(list(x = x, groups = groups, probabilities = mrf.grid,
                            removals = removals), 
