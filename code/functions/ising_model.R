@@ -35,7 +35,7 @@ ising_model <- function(x, temp = 4) {
       energy.cur <- energy(current.state, position = lin.index, 
                            value = current.state[[position]])
       energy.swap <- energy(current.state, position = lin.index, 
-                            value = 1 - current.state[[position]])
+                            value = 1 - current.state[[lin.index]])
       energy.change <- energy.swap - energy.cur
       
       # Metropolis Criterion                     
