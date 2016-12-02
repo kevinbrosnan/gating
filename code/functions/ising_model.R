@@ -23,9 +23,11 @@ ising_model <- function(x, temp = 4) {
     SA.updates <- SA.updates + 1
     SA.update <- FALSE
     prob.previous <- prob
+    SA.update.runs <- 0
     
     while (SA.update != TRUE) {
       
+      SA.update.runs <- SA.update.runs + 1
       # Pick a random point and get its linear index
       row.index <- ceiling(no.rows * runif(1))
       col.index <- ceiling(no.cols * runif(1))
@@ -42,31 +44,35 @@ ising_model <- function(x, temp = 4) {
       if (energy.change <= 0) {
         current.state[lin.index] <- 1 - current.state[lin.index]
         
+        # Update the temperature?
+        if (abs(energy.change/energy.system) < 1e-5) {
+          SA.update <- TRUE
+        }
       } else if (ln.alpha <= -energy.change/temp.cur) {
         current.state[lin.index] <- 1 - current.state[lin.index]
-      }
-      
-      # Update the temperature?
-      if ((energy.change/energy.system) < 1e-5) {
-        SA.update <- TRUE
+        
+        # Update the temperature?
+        if (abs(energy.change/energy.system) < 1e-5) {
+          SA.update <- TRUE
+        }
       }
     }
     
-    energy.final.ones <- energy_system(current.state, value = 1)
-    energy.final.zeros <- energy_system(current.state, value = 0)
+    neigh.ones <- neigh_system(current.state, value = 1)
+    neigh.zeros <- neigh_system(current.state, value = 0)
 
-    prob.final.ones <- exp((1/temp) * energy.final.ones)
-    prob.final.zeros <- exp((1/temp) * energy.final.zeros)
+    prob.final.ones <- exp((1/temp) * neigh.ones)
+    prob.final.zeros <- exp((1/temp) * neigh.zeros)
     prob <- prob.final.ones / (prob.final.ones + prob.final.zeros)
     
     # Are we finished annealing?
-    if (abs(prob - prob.previous) < 1e-4 || SA.updates >= 43) {
+    if ((abs(prob - prob.previous) / length(prob)) < 1e-4 || SA.updates >= 43) {
       SA.stop <- TRUE
     }
   }
   
   output <- structure(list(prob = prob, temperature = temp, 
-                           state = current.state))
+                           state = current.state, SA.update.runs))
   
   return(output)
 }

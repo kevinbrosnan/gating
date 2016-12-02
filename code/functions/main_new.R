@@ -20,9 +20,11 @@
   # Function Loading
   source(paste0(gh.code, "make_grid.R"))
   source(paste0(gh.code, "grid_red.R"))
-  source(paste0(gh.code, "ising_model.R"))
+#  source(paste0(gh.code, "ising_model.R"))
   source(paste0(gh.code, "energy.R"))
   source(paste0(gh.code, "energy_system.R"))
+#  source(paste0(gh.code, "neigh_system.R"))
+#  source(paste0(gh.code, "neighbours.R"))
   
 ##---- Methodology Applied to GvHD data ----##
 
