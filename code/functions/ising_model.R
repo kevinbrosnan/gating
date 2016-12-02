@@ -15,6 +15,7 @@ ising_model <- function(x, temp = 4) {
   
   # Holding matrices
   current.state <- x
+  prob <- matrix(1, nrow = no.rows, ncol = no.cols)
   
   while (SA.stop != TRUE) {
     
@@ -51,14 +52,15 @@ ising_model <- function(x, temp = 4) {
       }
     }
     
+    energy.final.ones <- energy_system(current.state, value = 1)
+    energy.final.zeros <- energy_system(current.state, value = 0)
+    prob.final.ones <- exp((1/temp) * energy.final.ones)
+    prob.final.zeros <- exp((1/temp) * energy.final.zeros)
+    prob <- prob.final.ones / (prob.final.ones + prob.final.zeros)
+    
     # Are we finished annealing?
     if (abs(prob - prob.previous) < 1e-4 || SA.updates >= 43) {
       SA.stop <- TRUE
-      energy.final.ones <- energy_system(current.state, value = 1)
-      energy.final.zeros <- energy_system(current.state, value = 0)
-      prob.final.ones <- exp((1/temp) * energy.final.ones)
-      prob.final.zeros <- exp((1/temp) * energy.final.zeros)
-      prob <- prob.final.ones / (prob.final.ones + prob.final.zeros)
     }
   }
   
