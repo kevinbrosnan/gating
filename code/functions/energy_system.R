@@ -5,21 +5,21 @@ energy_system <- function(x, value = NULL) {
   
   if (is.null(value)) {
   
-    energy <- 0
+    energy <- matrix(0, nrow = no.rows, ncol = no.cols)
     for (i in 1:no.cols) {
       for (j in 1:no.rows) {
         pos <- j + (i - 1) * no.cols
-        energy <- energy + energy(x, position = pos, value = x[j,i])
+        energy[pos] <- energy(x, position = pos, value = x[j,i])
       }
     }
 
   } else {
     
-    energy <- 0
+    energy <- matrix(0, nrow = no.rows, ncol = no.cols)
     for (i in 1:no.cols) {
       for (j in 1:no.rows) {
         pos <- j + (i - 1) * no.cols
-        energy <- energy + energy(x, position = pos, value = value)
+        energy[pos] <- energy(x, position = pos, value = value)
       }
     }
     

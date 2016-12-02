@@ -11,7 +11,7 @@ ising_model <- function(x, temp = 4) {
   
   # Defined Constant
   ln.alpha <- log(runif(1))
-  energy.system <- energy_system(x)
+  energy.system <- sum(energy_system(x))
   
   # Holding matrices
   current.state <- x
@@ -53,7 +53,10 @@ ising_model <- function(x, temp = 4) {
     }
     
     energy.final.ones <- energy_system(current.state, value = 1)
+print(energy.final.ones)    
     energy.final.zeros <- energy_system(current.state, value = 0)
+print(paste0('Dimension of P(x=0): ', dim(energy.final.zeros)))
+print(paste0('Dimension of P(x=1): ', dim(energy.final.ones)))
     prob.final.ones <- exp((1/temp) * energy.final.ones)
     prob.final.zeros <- exp((1/temp) * energy.final.zeros)
     prob <- prob.final.ones / (prob.final.ones + prob.final.zeros)
@@ -64,5 +67,8 @@ ising_model <- function(x, temp = 4) {
     }
   }
   
-  return(prob)
+  output <- structure(list(prob = prob, temperature = temp, 
+                           state = current.state))
+  
+  return(output)
 }
