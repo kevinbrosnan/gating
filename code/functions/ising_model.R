@@ -33,7 +33,7 @@ ising_model <- function(x, temp = 4) {
       
       # Energy Change
       energy.cur <- energy(current.state, position = lin.index, 
-                           value = current.state[[position]])
+                           value = current.state[[lin.index]])
       energy.swap <- energy(current.state, position = lin.index, 
                             value = 1 - current.state[[lin.index]])
       energy.change <- energy.swap - energy.cur
