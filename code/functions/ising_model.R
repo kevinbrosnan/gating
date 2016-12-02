@@ -1,0 +1,66 @@
+ising_model <- function(x, temp = 4) {
+  
+  # Dimensions of input matrix
+  no.rows <- nrow(x)
+  no.cols <- ncol(x)
+  
+  # Simulated Annealing Stopping Criterion
+  SA.stop <- FALSE
+  SA.update <- FALSE
+  SA.updates <- 0
+  
+  # Defined Constant
+  ln.alpha <- log(runif(1))
+  energy.system <- energy_system(x)
+  
+  # Holding matrices
+  current.state <- x
+  
+  while (SA.stop != TRUE) {
+    
+    temp.cur <- temp * (0.95 ^ SA.updates)
+    SA.updates <- SA.updates + 1
+    SA.update <- FALSE
+    prob.previous <- prob
+    
+    while (SA.update != TRUE) {
+      
+      # Pick a random point and get its linear index
+      row.index <- ceiling(no.rows * runif(1))
+      col.index <- ceiling(no.cols * runif(1))
+      lin.index <- (col.index - 1) * no.rows + row.index 
+      
+      # Energy Change
+      energy.cur <- energy(current.state, position = lin.index, 
+                           value = current.state[[position]])
+      energy.swap <- energy(current.state, position = lin.index, 
+                            value = 1 - current.state[[position]])
+      energy.change <- energy.swap - energy.cur
+      
+      # Metropolis Criterion                     
+      if (energy.change <= 0) {
+        current.state[lin.index] <- 1 - current.state[lin.index]
+        
+      } else if (ln.alpha <= -energy.change/temp.cur) {
+        current.state[lin.index] <- 1 - current.state[lin.index]
+      }
+      
+      # Update the temperature?
+      if ((energy.change/energy.system) < 1e-5) {
+        SA.update <- TRUE
+      }
+    }
+    
+    # Are we finished annealing?
+    if (abs(prob - prob.previous) < 1e-4 || SA.updates >= 43) {
+      SA.stop <- TRUE
+      energy.final.ones <- energy_system(current.state, value = 1)
+      energy.final.zeros <- energy_system(current.state, value = 0)
+      prob.final.ones <- exp((1/temp) * energy.final.ones)
+      prob.final.zeros <- exp((1/temp) * energy.final.zeros)
+      prob <- prob.final.ones / (prob.final.ones + prob.final.zeros)
+    }
+  }
+  
+  return(prob)
+}

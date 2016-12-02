@@ -36,6 +36,9 @@
   source(paste0(gh.code, "make_grid.R"))
   source(paste0(gh.code, "unmake_grid.R"))
   source(paste0(gh.code, "mrf_gating.R"))
+  source(paste0(gh.code, "ising_model.R"))
+  source(paste0(gh.code, "energy.R"))
+  source(paste0(gh.code, "pyramid_schedule.R"))
   
 ####--- Exploratory Analysis (Rituximab Data) ------------------------------####
   

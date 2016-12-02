@@ -10,7 +10,7 @@ mrf_gating <- function(x, min = 0, max = 1023) {
   removals[extreme.values] <- 1
   
   # Markov Random Field Approach
-  mrf.grid <- ising_denosing(mat.grid)
+  mrf.grid <- ising_model(mat.grid)
 
   # Requirement to use connected components labelling
   mrf.grid.round <- mrf.grid
