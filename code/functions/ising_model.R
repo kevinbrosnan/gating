@@ -53,10 +53,8 @@ ising_model <- function(x, temp = 4) {
     }
     
     energy.final.ones <- energy_system(current.state, value = 1)
-print(energy.final.ones)    
     energy.final.zeros <- energy_system(current.state, value = 0)
-print(paste0('Dimension of P(x=0): ', dim(energy.final.zeros)))
-print(paste0('Dimension of P(x=1): ', dim(energy.final.ones)))
+
     prob.final.ones <- exp((1/temp) * energy.final.ones)
     prob.final.zeros <- exp((1/temp) * energy.final.zeros)
     prob <- prob.final.ones / (prob.final.ones + prob.final.zeros)
