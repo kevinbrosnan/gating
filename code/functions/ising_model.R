@@ -66,13 +66,14 @@ ising_model <- function(x, temp = 4) {
     prob <- prob.final.ones / (prob.final.ones + prob.final.zeros)
     
     # Are we finished annealing?
-    if ((abs(prob - prob.previous) / length(prob)) < 1e-4 || SA.updates >= 43) {
+    if (max(abs(prob - prob.previous)) < 1e-4 || SA.updates >= 43) {
       SA.stop <- TRUE
+      prob.change <- max(abs(prob - prob.previous))
     }
   }
   
-  output <- structure(list(prob = prob, temperature = temp, 
-                           state = current.state, SA.update.runs))
+  output <- structure(list(prob = prob, temperature = temp.cur, 
+                           state = current.state, prob.change = prob.change))
   
   return(output)
 }
