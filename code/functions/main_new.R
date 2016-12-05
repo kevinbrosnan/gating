@@ -26,7 +26,7 @@
   source(paste0(gh.code, "neigh_system.R"))
   source(paste0(gh.code, "neighbours.R"))
   source(paste0(gh.code, "grid_inc.R"))
-  
+
 ##---- Methodology Applied to GvHD data ----##
 
 adc.level <- ceiling(max(log2(max(GvHD.con)), log2(max(GvHD.pos))))
@@ -36,9 +36,9 @@ CD4.v.CD8B.levels <- grid_red(CD4.v.CD8B, red.dim = 64)
 CD4.v.CD8B.prob.map <- vector('list', length = length(CD4.v.CD8B.levels))
 
 temperature <- 4
-CD4.v.CD8B.prob.map[[1]] <- ising_model(CD4.v.CD8B.levels[[i]], temp = temperature)
+CD4.v.CD8B.prob.map[[1]] <- ising_model(CD4.v.CD8B.levels[[1]], temp = temperature)
 
-for (i in 2:length(CD4.v.CD8B.levels)) {
+for (i in 2:(length(CD4.v.CD8B.levels)-1)) {
   cur.grid <- grid_inc(CD4.v.CD8B.prob.map[[i-1]]$state) 
   CD4.v.CD8B.prob.map[[i]] <- ising_model(cur.grid, temp = temperature)
 }

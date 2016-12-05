@@ -10,10 +10,16 @@ mrf_gating <- function(x, min = 0, max = 1023) {
   removals[extreme.values] <- 1
   
   # Markov Random Field Approach
-  mrf.grid <- ising_model(mat.grid)
+  mat.grid <- grid_red(mat.grid, red.dim = 64)
+  mrf.grid <- ising_model(mat.grid, temp = 4)
+  
+  for (i in 1:4) {
+    mrf.grid <- grid_inc(x = mrf.grid$state)
+    mrf.grid <- ising_model(mrf.grid, temp = 4)
+  }  
 
   # Requirement to use connected components labelling
-  mrf.grid.round <- mrf.grid
+  mrf.grid.round <- mrf.grid$prob
   mrf.grid.round[which(mrf.grid.round > 0.5)] <- 1
   mrf.grid.round[which(mrf.grid.round <= 0.5)] <- 0
 
@@ -24,7 +30,7 @@ mrf_gating <- function(x, min = 0, max = 1023) {
   groups <- unmake_grid(x = groups.grid, original = x, min = min, max = max)
 
   # Output to return to the user
-  output <- structure(list(x = x, groups = groups, probabilities = mrf.grid,
+  output <- structure(list(x = x, groups = groups, probabilities = mrf.grid$prob,
                            removals = removals), 
                       class = "mrf_gating")
   

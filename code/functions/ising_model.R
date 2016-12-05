@@ -66,7 +66,7 @@ ising_model <- function(x, temp = 4) {
     prob <- prob.final.ones / (prob.final.ones + prob.final.zeros)
     
     # Are we finished annealing?
-    if (max(abs(prob - prob.previous)) < 1e-4 || SA.updates >= 43) {
+    if (max(abs(prob - prob.previous)) < 0.1 || SA.updates >= 43) {
       SA.stop <- TRUE
       prob.change <- max(abs(prob - prob.previous))
     }

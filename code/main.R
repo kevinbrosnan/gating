@@ -32,13 +32,17 @@
   rituximab <- read.csv(paste0(gh.data, "rituximab/rituximab.csv"))
   
   # Required Functions
-  source(paste0(gh.code, "explore_flow.R"))
-  source(paste0(gh.code, "make_grid.R"))
-  source(paste0(gh.code, "unmake_grid.R"))
-  source(paste0(gh.code, "mrf_gating.R"))
-  source(paste0(gh.code, "ising_model.R"))
   source(paste0(gh.code, "energy.R"))
-  source(paste0(gh.code, "pyramid_schedule.R"))
+  source(paste0(gh.code, "energy_system.R"))
+  source(paste0(gh.code, "explore_flow.R"))
+  source(paste0(gh.code, "grid_inc.R"))
+  source(paste0(gh.code, "grid_red.R"))
+  source(paste0(gh.code, "ising_model.R"))
+  source(paste0(gh.code, "make_grid.R"))
+  source(paste0(gh.code, "mrf_gating.R"))
+  source(paste0(gh.code, "neigh_system.R"))
+  source(paste0(gh.code, "neighbours.R"))
+  source(paste0(gh.code, "unmake_grid.R"))
   
 ####--- Exploratory Analysis (Rituximab Data) ------------------------------####
   
