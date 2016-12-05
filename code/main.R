@@ -116,8 +116,6 @@
   # Table 1 - Rituximab Data
   
   
-  
-  
   # Figure 3 - GvHD Data Control Group CD4 v CD8B, CD4 v CD3
   
   

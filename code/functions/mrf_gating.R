@@ -11,7 +11,7 @@ mrf_gating <- function(x, min = 0, max = 1023) {
   
   # Markov Random Field Approach
   mat.grid <- grid_red(mat.grid, red.dim = 64)
-  mrf.grid <- ising_model(mat.grid, temp = 4)
+  mrf.grid <- ising_model(mat.grid[[1]], temp = 4)
   
   for (i in 1:4) {
     mrf.grid <- grid_inc(x = mrf.grid$state)
