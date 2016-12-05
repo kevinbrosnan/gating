@@ -20,11 +20,12 @@
   # Function Loading
   source(paste0(gh.code, "make_grid.R"))
   source(paste0(gh.code, "grid_red.R"))
-# source(paste0(gh.code, "ising_model.R"))
+  source(paste0(gh.code, "ising_model.R"))
   source(paste0(gh.code, "energy.R"))
   source(paste0(gh.code, "energy_system.R"))
   source(paste0(gh.code, "neigh_system.R"))
   source(paste0(gh.code, "neighbours.R"))
+  source(paste0(gh.code, "grid_inc.R"))
   
 ##---- Methodology Applied to GvHD data ----##
 
@@ -34,7 +35,10 @@ CD4.v.CD8B <- make_grid(x = GvHD.con[, c(1,2)], min = 0, max = (2^adc.level - 1)
 CD4.v.CD8B.levels <- grid_red(CD4.v.CD8B, red.dim = 64)
 CD4.v.CD8B.prob.map <- vector('list', length = length(CD4.v.CD8B.levels))
 
-for (i in 1:length(CD4.v.CD8B.levels)) {
-  temperature <- 4
-  CD4.v.CD8B.prob.map[[i]] <- ising_model(CD4.v.CD8B.levels[[i]], temp = temperature)
+temperature <- 4
+CD4.v.CD8B.prob.map[[1]] <- ising_model(CD4.v.CD8B.levels[[i]], temp = temperature)
+
+for (i in 2:length(CD4.v.CD8B.levels)) {
+  cur.grid <- grid_inc(CD4.v.CD8B.prob.map[[i-1]]$state) 
+  CD4.v.CD8B.prob.map[[i]] <- ising_model(cur.grid, temp = temperature)
 }
