@@ -87,9 +87,10 @@
          col = gray(3/4), pch = 20)
   
   par(pty = "s")
+  
   plot(MRF.initial$x, type = "n", las = 1)
   points(MRF.initial$x[which(MRF.initial$removals == 1),], pch = "*")
-  
+  points(MRF.initial$x[which(MRF.initial$groups != 0),])
   
   par(mfrow = c(1, 1))
   

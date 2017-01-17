@@ -38,7 +38,7 @@ CD4.v.CD8B.prob.map <- vector('list', length = length(CD4.v.CD8B.levels))
 temperature <- 4
 CD4.v.CD8B.prob.map[[1]] <- ising_model(CD4.v.CD8B.levels[[1]], temp = temperature)
 
-for (i in 2:(length(CD4.v.CD8B.levels)-1)) {
+for (i in 2:(length(CD4.v.CD8B.levels))) {
   cur.grid <- grid_inc(CD4.v.CD8B.prob.map[[i-1]]$state) 
   CD4.v.CD8B.prob.map[[i]] <- ising_model(cur.grid, temp = temperature)
 }
