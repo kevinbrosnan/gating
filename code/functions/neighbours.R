@@ -10,7 +10,7 @@ neighbours <- function(x, position, value, dimension) {
   }
   
   neighbourhood <- neighbourhood[neighbourhood > 0]
-  neighbourhood <- neighbourhood[neighbourhood <= dimension ^ 2]
+  neighbourhood <- neighbourhood[neighbourhood < (dimension ^ 2 + 1)]
   
   neighbours <- sum(x[neighbourhood] == value)
   
