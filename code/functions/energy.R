@@ -1,17 +1,15 @@
-energy <- function(x, position, value) {
+energy <- function(x, position, value, dimension) {
   
-  no.rows <- nrow(x)
-  
-  if (position %% no.rows == 0) {
-    neighbourhood <- position + c(-1, -no.rows, no.rows)
-  } else if ((position - 1) %% no.rows == 0) {
-    neighbourhood <- position + c(1, -no.rows, no.rows)
+  if (position %% dimension == 0) {
+    neighbourhood <- position + c(-1, -dimension, dimension)
+  } else if ((position - 1) %% dimension == 0) {
+    neighbourhood <- position + c(1, -dimension, dimension)
   } else {
-    neighbourhood <- position + c(1, -1, no.rows, - no.rows)
+    neighbourhood <- position + c(1, -1, dimension, - dimension)
   }
   
   neighbourhood <- neighbourhood[which(neighbourhood > 0)]
-  neighbourhood <- neighbourhood[which(neighbourhood <= no.rows * no.rows)]
+  neighbourhood <- neighbourhood[which(neighbourhood <= dimension * dimension)]
   
   energy <- 2 * sum(x[neighbourhood] == value) - length(neighbourhood)
   

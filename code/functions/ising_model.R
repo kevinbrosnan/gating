@@ -1,8 +1,7 @@
 ising_model <- function(x, temp = 4) {
   
   # Dimensions of input matrix
-  no.rows <- nrow(x)
-  no.cols <- ncol(x)
+  dimension <- nrow(x)
   
   # Simulated Annealing Stopping Criterion
   SA.stop <- FALSE
@@ -11,11 +10,11 @@ ising_model <- function(x, temp = 4) {
   
   # Defined Constant
   ln.alpha <- log(runif(1))
-  energy.system <- sum(energy_system(x))
+  energy.system <- sum(energy_system(x, dimension = dimension))
   
   # Holding matrices
   current.state <- x
-  prob <- matrix(1, nrow = no.rows, ncol = no.cols)
+  prob <- matrix(1, nrow = dimension, ncol = dimension)
   
   while (SA.stop != TRUE) {
     
@@ -29,15 +28,17 @@ ising_model <- function(x, temp = 4) {
       
       SA.update.runs <- SA.update.runs + 1
       # Pick a random point and get its linear index
-      row.index <- ceiling(no.rows * runif(1))
-      col.index <- ceiling(no.cols * runif(1))
-      lin.index <- (col.index - 1) * no.rows + row.index 
+      row.index <- ceiling(dimension * runif(1))
+      col.index <- ceiling(dimension * runif(1))
+      lin.index <- (col.index - 1) * dimension + row.index 
       
       # Energy Change
       energy.cur <- energy(current.state, position = lin.index, 
-                           value = current.state[[lin.index]])
+                           value = current.state[[lin.index]],
+                           dimension = dimension)
       energy.swap <- energy(current.state, position = lin.index, 
-                            value = 1 - current.state[[lin.index]])
+                            value = 1 - current.state[[lin.index]],
+                            dimension = dimension)
       energy.change <- energy.swap - energy.cur
       
       # Metropolis Criterion                     
@@ -58,8 +59,10 @@ ising_model <- function(x, temp = 4) {
       }
     }
     
-    neigh.ones <- neigh_system(current.state, value = 1)
-    neigh.zeros <- neigh_system(current.state, value = 0)
+    neigh.ones <- neigh_system(current.state, value = 1,
+                               dimension = dimension)
+    neigh.zeros <- neigh_system(current.state, value = 0,
+                                dimension = dimension)
 
     prob.final.ones <- exp((1/temp) * neigh.ones)
     prob.final.zeros <- exp((1/temp) * neigh.zeros)

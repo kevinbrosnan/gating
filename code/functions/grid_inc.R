@@ -1,9 +1,6 @@
-grid_inc <- function(x) {
+grid_inc <- function(x, dimension) {
   
-  no.rows <- nrow(x)
-  no.cols <- ncol(x)
-  
-  y <- matrix(0, nrow = 2 * no.rows, ncol = 2 * no.cols)
+  y <- matrix(0, nrow = 2 * dimension, ncol = 2 * dimension)
   
   odd <- seq(1, nrow(y), by = 2)
   even <- seq(2, nrow(y), by = 2)
