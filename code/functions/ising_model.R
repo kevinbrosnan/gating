@@ -46,7 +46,7 @@ ising_model <- function(x, temp = 4) {
         current.state[lin.index] <- 1 - current.state[lin.index]
         
         # Update the temperature?
-        if (abs(energy.change/energy.system) < 1e-5) {
+        if (abs(energy.change/energy.system) < 1e-3) {
           SA.update <- TRUE
         }
       } else if (ln.alpha <= -energy.change/temp.cur) {
