@@ -34,10 +34,10 @@ ising_model <- function(x, temp = 4) {
       
       # Energy Change
       energy.cur <- energy(current.state, position = lin.index, 
-                           value = current.state[[lin.index]],
+                           value = current.state[lin.index],
                            dimension = dimension)
       energy.swap <- energy(current.state, position = lin.index, 
-                            value = 1 - current.state[[lin.index]],
+                            value = 1 - current.state[lin.index],
                             dimension = dimension)
       energy.change <- energy.swap - energy.cur
       
@@ -53,7 +53,7 @@ ising_model <- function(x, temp = 4) {
         current.state[lin.index] <- 1 - current.state[lin.index]
         
         # Update the temperature?
-        if (abs(energy.change/energy.system) < 1e-5) {
+        if (abs(energy.change/energy.system) < 1e-3) {
           SA.update <- TRUE
         }
       }
