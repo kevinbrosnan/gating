@@ -9,10 +9,12 @@ mrf_gating <- function(x, min = 0, max = 1023, temperature) {
   extreme.values <- unique(c(which(x[,1] == max), which(x[,2] == max)))
   removals <- rep(0, times = nrow(x))
   removals[extreme.values] <- 1
-return(removals)  
+  
   # Markov Random Field Approach
   mat.grid <- grid_red(mat.grid, red.dim = 64, dimension)
   mrf.grid <- ising_model(mat.grid[[1]], temp = temperature)
+  
+return(mrf.grid)  
   
   for (i in 1:4) {
     mrf.grid <- grid_inc(x = mrf.grid$state, nrow(mrf.grid$state))
