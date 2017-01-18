@@ -1,12 +1,12 @@
 neighbours <- function(x, position, value, dimension) {
   
   top.bottom.cases <- position %% dimension
+  
+  neighbourhood <- position + c(1, -1, dimension, -dimension)
   if (top.bottom.cases == 0) {
-    neighbourhood <- position + c(-1, -dimension, dimension)
+    neighbourhood <- neighbourhood[-1]
   } else if (top.bottom.cases == 1) {
-    neighbourhood <- position + c(1, -dimension, dimension)
-  } else {
-    neighbourhood <- position + c(1, -1, dimension, -dimension)
+    neighbourhood <- neighbourhood[-2]
   }
   
   neighbourhood <- neighbourhood[neighbourhood > 0]
