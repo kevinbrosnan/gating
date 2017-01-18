@@ -77,7 +77,7 @@
   Lo.initial <- flowClust(rituximab, varNames = c("FSC.H", "SSC.H"), K = 1, 
                           B = 100, z.cutoff = 0.5)
   
-  MRF.initial <- mrf_gating(rituximab[, c("FSC.H", "SSC.H")])
+  MRF.initial <- mrf_gating(rituximab[, c("FSC.H", "SSC.H")], temperature = 4)
   
   par(mfrow = c(1,2))
   par(pty = "s")
