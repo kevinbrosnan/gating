@@ -1,27 +1,26 @@
-mrf_gating <- function(x, min = 0, max = 1023) {
+mrf_gating <- function(x, min = 0, max = 1023, temperature) {
   
   # Put the two variables of interest in an NxN matrix (field)  
   mat.grid <- make_grid(x, min = min, max = max)
+  dimension <- nrow(mat.grid)
   
   # Remove all extremity values (keep record of their positions)
-  mat.grid[ , ncol(mat.grid)] <- mat.grid[nrow(mat.grid), ] <- 0 
+  mat.grid[ , dimension] <- mat.grid[dimension, ] <- 0 
   extreme.values <- unique(c(which(x[,1] == max), which(x[,2] == max)))
   removals <- rep(0, times = nrow(x))
   removals[extreme.values] <- 1
-  
+return(removals)  
   # Markov Random Field Approach
-  mat.grid <- grid_red(mat.grid, red.dim = 64)
-  mrf.grid <- ising_model(mat.grid[[1]], temp = 4)
+  mat.grid <- grid_red(mat.grid, red.dim = 64, dimension)
+  mrf.grid <- ising_model(mat.grid[[1]], temp = temperature)
   
   for (i in 1:4) {
-    mrf.grid <- grid_inc(x = mrf.grid$state)
+    mrf.grid <- grid_inc(x = mrf.grid$state, nrow(mrf.grid$state))
     mrf.grid <- ising_model(mrf.grid, temp = 4)
   }  
 
   # Requirement to use connected components labelling
-  mrf.grid.round <- mrf.grid$prob
-  mrf.grid.round[which(mrf.grid.round > 0.5)] <- 1
-  mrf.grid.round[which(mrf.grid.round <= 0.5)] <- 0
+  mrf.grid.round <- round(mrf.grid$prob)
 
   # Connected Components Algorithm
   groups.grid <- SDMTools::ConnCompLabel(mrf.grid.round)
