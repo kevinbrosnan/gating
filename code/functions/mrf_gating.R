@@ -17,7 +17,7 @@ mrf_gating <- function(x, min = 0, max = 1023, temperature) {
   for (i in 1:4) {
     mrf.grid <- grid_inc(x = mrf.grid$state, nrow(mrf.grid$state))
     mrf.grid <- ising_model(mrf.grid, temp = temperature)
-    print(paste0(dim(mrf.grid$state)[1], " x ", dim(mrf.grid$state)[1], " grid complete"))  
+    print(paste0(dim(mrf.grid$state)[1], " x ", dim(mrf.grid$state)[1], " grid complete"))
   }  
 
   # Requirement to use connected components labelling
