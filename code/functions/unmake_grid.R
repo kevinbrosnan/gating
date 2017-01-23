@@ -16,5 +16,13 @@ unmake_grid <- function(x, original, min = 0, max = 1023) {
     groups[i] <- group.numbering.new[which(group.numbering == groups[i])]
   }
   
+  remove.small.groups <- as.numeric(names(table(groups) <= 10))
+  
+  for (i in 1:length(groups)) {
+    if (groups[i] %in% remove.small.groups) {
+      groups[i] <- 0
+    }
+  }
+  
   return(groups)
 }
