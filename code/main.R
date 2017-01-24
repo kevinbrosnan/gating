@@ -117,7 +117,7 @@
   par(pty = 's')
   plot(MRF.7AAD_antiBrdU$x, type = "n", las = 1)
   points(MRF.7AAD_antiBrdU$x[which(MRF.7AAD_antiBrdU$removals == 1),], pch = "*")
-  points(MRF.7AAD_antiBrdU$x[which(MRF.7AAD_antiBrdU$groups == 9),], col = 'red')
+  points(MRF.7AAD_antiBrdU$x[which(MRF.7AAD_antiBrdU$groups != 0),], col = cluster.colours[MRF.7AAD_antiBrdU$groups])
   par(mfrow = c(1, 1))
   
   
