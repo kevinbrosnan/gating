@@ -44,6 +44,8 @@
   source(paste0(gh.code, "neighbours.R"))
   source(paste0(gh.code, "unmake_grid.R"))
   
+  # Colour Schemes
+  cluster.colours <- c("red", "green", "blue", "purple", "orange", "yellow")
   
 ####--- Exploratory Analysis (Rituximab Data) ------------------------------####
   
@@ -91,7 +93,7 @@
   
   plot(MRF.initial$x, type = "n", las = 1)
   points(MRF.initial$x[which(MRF.initial$removals == 1),], pch = "*")
-  points(MRF.initial$x[which(MRF.initial$groups != 0),])
+  points(MRF.initial$x[which(MRF.initial$groups != 0),], col = MRF.initial$groups)
   
   par(mfrow = c(1, 1))
   
@@ -100,7 +102,7 @@
   Lo.7AAD_antiBrdU <- flowClust(Lo.gate, K = 3, B = 100)
   
   MRF.gate <- rituximab[which(MRF.initial$groups == 1), c("FL3.H", "FL1.H")]
-  MRF.7AAD_antiBrdU <- mrf_gating(MRF.gate)
+  MRF.7AAD_antiBrdU <- mrf_gating(MRF.gate, temperature = 4)
   
   par(mfrow = c(1,2))
   par(pty = "s")
@@ -111,7 +113,9 @@
          col = gray(3/4), pch = 20)
   
   par(pty = 's')
-  
+  plot(MRF.7AAD_antiBrdU$x, type = "n", las = 1)
+  points(MRF.7AAD_antiBrdU$x[which(MRF.7AAD_antiBrdU$removals == 1),], pch = "*")
+  points(MRF.7AAD_antiBrdU$x[which(MRF.7AAD_antiBrdU$groups == 9),], col = 'red')
   par(mfrow = c(1, 1))
   
   

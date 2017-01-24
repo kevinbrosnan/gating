@@ -9,19 +9,19 @@ unmake_grid <- function(x, original, min = 0, max = 1023) {
     groups[which(index.original == index.x[i])] <- groups.x[i]
   }
   
-  group.numbering <- sort(unique(groups))
-  group.numbering.new <- 0:(length(group.numbering - 1))
-  
-  for (i in 1:length(groups)) {
-    groups[i] <- group.numbering.new[which(group.numbering == groups[i])]
-  }
-  
   remove.small.groups <- as.numeric(names(which(table(groups) <= 10)))
   
   for (i in 1:length(groups)) {
     if (groups[i] %in% remove.small.groups) {
       groups[i] <- 0
     }
+  }
+  
+  group.numbering <- sort(unique(groups))
+  group.numbering.new <- 0:(length(group.numbering - 1))
+  
+  for (i in 1:length(groups)) {
+    groups[i] <- group.numbering.new[which(group.numbering == groups[i])]
   }
   
   return(groups)

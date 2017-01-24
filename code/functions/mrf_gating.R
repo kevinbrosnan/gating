@@ -29,9 +29,12 @@ mrf_gating <- function(x, min = 0, max = 1023, temperature) {
   # Identify the groups and return to data frame format
   groups <- unmake_grid(x = groups.grid, original = x, min = min, max = max)
 
+  # Print Probability of active cell for each cell in the original matrix
+  probs <- mrf.grid$prob[x[,1], x[,2]]
+  
   # Output to return to the user
-  output <- structure(list(x = x, groups = groups, probabilities = mrf.grid$prob,
-                           removals = removals), 
+  output <- structure(list(x = x, groups = groups, probabilities = probs,
+                           removals = removals, grid.probs = mrf.grid$prob), 
                       class = "mrf_gating")
   
   return(output)
