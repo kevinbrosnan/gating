@@ -84,14 +84,15 @@
   par(mfrow = c(1,2))
   par(pty = "s")
   plot(Lo.initial, data = rituximab, xlab = "FSC-Height", 
-       ylab = "SSC-Height", las = 1, col = 'white', 
-       main = "(a) t mixture with Box-Cox", show.outliers = FALSE)
+       ylab = "SSC-Height", las = 1, 
+       main = "(a) t mixture with Box-Cox", show.outliers = TRUE)
   points(rituximab[which(Lo.initial@flagOutliers), c(1,2)], 
          col = gray(3/4), pch = 20)
   
   par(pty = "s")
   
-  plot(MRF.initial$x, type = "n", las = 1)
+  plot(MRF.initial$x, type = "n", las = 1, xlab = "FSC-Height", ylab = "SSC-Height",
+  		main = "(b) Markov random field")
   points(MRF.initial$x[which(MRF.initial$removals == 1),], pch = "*")
   points(MRF.initial$x[which(MRF.initial$groups != 0),], col = MRF.initial$groups)
   points(MRF.initial$x[which(MRF.initial$groups == 0),], col = 'grey')
@@ -109,15 +110,17 @@
   par(mfrow = c(1,2))
   par(pty = "s")
   plot(Lo.7AAD_antiBrdU, data = Lo.gate, ylab = 'Anti-BrdU FITC', 
-       xlab = '7 AAD', main = "(a) t mixture with Box-Cox", col = 'white', 
+       xlab = '7 AAD', main = "(a) t mixture with Box-Cox", 
        las = 1, show.outliers = FALSE)
   points(Lo.gate[which(Lo.7AAD_antiBrdU@flagOutliers),], 
          col = gray(3/4), pch = 20)
   
   par(pty = 's')
-  plot(MRF.7AAD_antiBrdU$x, type = "n", las = 1)
+  plot(MRF.7AAD_antiBrdU$x, type = "n", las = 1, xlab = "7 AAD", ylab = "Anti-BrdU FITC",
+  		main = "(b) Markov random field")
   points(MRF.7AAD_antiBrdU$x[which(MRF.7AAD_antiBrdU$removals == 1),], pch = "*")
   points(MRF.7AAD_antiBrdU$x[which(MRF.7AAD_antiBrdU$groups != 0),], col = cluster.colours[MRF.7AAD_antiBrdU$groups])
+  points(MRF.7AAD_antiBrdU$x[which(MRF.7AAD_antiBrdU$groups == 0),], col = 'grey')
   par(mfrow = c(1, 1))
   
   
@@ -126,9 +129,90 @@
   
   # Figure 3 - GvHD Data Control Group CD4 v CD8B, CD4 v CD3
   
+  Lo.GvHDcon.CD4.CD8B <- flowClust(GvHD.con, varNames = c("CD4", "CD8b"), B = 100, K = 5)
+  Lo.GvHDcon.CD4.CD3 <- flowClust(GvHD.con, varNames = c("CD4", "CD3"), B = 100, K = 8)
+  
+  MRF.GvHDcon.CD4.CD8B <- mrf_gating(GvHD.con[,c("CD4", "CD8b")], temperature = 4)
+  MRF.GvHDcon.CD4.CD3 <- mrf_gating(GvHD.con[,c("CD4", "CD3")], temperature = 4)
+  
+  
+  par(mfrow = c(2,2))
+
+  par(pty = "s")
+  plot(Lo.GvHDcon.CD4.CD8B, data = GvHD.con, xlab = "CD4", 
+       ylab = "CD8b", las = 1, 
+       main = "(a) t mixture with Box-Cox", show.outliers = TRUE)
+  points(GvHD.con[which(Lo.GvHDcon.CD4.CD8B@flagOutliers), c("CD4","CD8b")], 
+         col = gray(3/4), pch = 20)
+  
+  par(pty = "s")  
+  plot(MRF.GvHDcon.CD4.CD8B$x, type = "n", las = 1, xlab = "CD4", ylab = "CD8b",
+  		main = "(b) Markov random field")
+  points(MRF.GvHDcon.CD4.CD8B$x[which(MRF.GvHDcon.CD4.CD8B$removals == 1),], pch = "*")
+  points(MRF.GvHDcon.CD4.CD8B$x[which(MRF.GvHDcon.CD4.CD8B$groups != 0),], col = cluster.colours[MRF.GvHDcon.CD4.CD8B$groups])
+  points(MRF.GvHDcon.CD4.CD8B$x[which(MRF.GvHDcon.CD4.CD8B$groups == 0),], col = 'grey')
+  points(MRF.GvHDcon.CD4.CD8B$x[which(MRF.GvHDcon.CD4.CD8B$removals == 1),], col = 'white')
+
+  par(pty = "s")
+  plot(Lo.GvHDcon.CD4.CD3, data = GvHD.con, xlab = "CD4", 
+       ylab = "CD3", las = 1, 
+       main = "(a) t mixture with Box-Cox", show.outliers = TRUE)
+  points(GvHD.con[which(Lo.GvHDcon.CD4.CD3@flagOutliers), c("CD4","CD3")], 
+         col = gray(3/4), pch = 20)
+  
+  par(pty = "s")  
+  plot(MRF.GvHDcon.CD4.CD3$x, type = "n", las = 1, xlab = "CD4", ylab = "CD3",
+  		main = "(b) Markov random field")
+  points(MRF.GvHDcon.CD4.CD3$x[which(MRF.GvHDcon.CD4.CD3$removals == 1),], pch = "*")
+  points(MRF.GvHDcon.CD4.CD3$x[which(MRF.GvHDcon.CD4.CD3$groups != 0),], col = cluster.colours[MRF.GvHDcon.CD4.CD3$groups])
+  points(MRF.GvHDcon.CD4.CD3$x[which(MRF.GvHDcon.CD4.CD3$groups == 0),], col = 'grey')
+  points(MRF.GvHDcon.CD4.CD3$x[which(MRF.GvHDcon.CD4.CD3$removals == 1),], col = 'white')
+
+  par(mfrow = c(1, 1))
   
   # Figure 4 - GvHD Data Positive Group CD4 v CD8B, CD4 v CD3
   
+  Lo.GvHDpos.CD4.CD8B <- flowClust(GvHD.pos, varNames = c("CD4", "CD8b"), B = 100, K = 8)
+  Lo.GvHDpos.CD4.CD3 <- flowClust(GvHD.pos, varNames = c("CD4", "CD3"), B = 100, K = 8)
+  
+  MRF.GvHDpos.CD4.CD8B <- mrf_gating(GvHD.pos[,c("CD4", "CD8b")], temperature = 4)
+  MRF.GvHDpos.CD4.CD3 <- mrf_gating(GvHD.pos[,c("CD4", "CD3")], temperature = 4)
+  
+  
+  par(mfrow = c(2,2))
+
+  par(pty = "s")
+  plot(Lo.GvHDpos.CD4.CD8B, data = GvHD.pos, xlab = "CD4", 
+       ylab = "CD8b", las = 1, 
+       main = "(a) t mixture with Box-Cox", show.outliers = TRUE)
+  points(GvHD.pos[which(Lo.GvHDpos.CD4.CD8B@flagOutliers), c("CD4","CD8b")], 
+         col = gray(3/4), pch = 20)
+  
+  par(pty = "s")  
+  plot(MRF.GvHDpos.CD4.CD8B$x, type = "n", las = 1, xlab = "CD4", ylab = "CD8b",
+  		main = "(b) Markov random field")
+  points(MRF.GvHDpos.CD4.CD8B$x[which(MRF.GvHDpos.CD4.CD8B$removals == 1),], pch = "*")
+  points(MRF.GvHDpos.CD4.CD8B$x[which(MRF.GvHDpos.CD4.CD8B$groups != 0),], col = cluster.colours[MRF.GvHDpos.CD4.CD8B$groups])
+  points(MRF.GvHDpos.CD4.CD8B$x[which(MRF.GvHDpos.CD4.CD8B$groups == 0),], col = 'grey')
+  points(MRF.GvHDpos.CD4.CD8B$x[which(MRF.GvHDpos.CD4.CD8B$removals == 1),], col = 'white')
+
+  par(pty = "s")
+  plot(Lo.GvHDpos.CD4.CD3, data = GvHD.pos, xlab = "CD4", 
+       ylab = "CD3", las = 1, 
+       main = "(a) t mixture with Box-Cox", show.outliers = TRUE)
+  points(GvHD.pos[which(Lo.GvHDpos.CD4.CD3@flagOutliers), c("CD4","CD3")], 
+         col = gray(3/4), pch = 20)
+  
+  par(pty = "s")  
+  plot(MRF.GvHDpos.CD4.CD3$x, type = "n", las = 1, xlab = "CD4", ylab = "CD3",
+  		main = "(b) Markov random field")
+  points(MRF.GvHDpos.CD4.CD3$x[which(MRF.GvHDpos.CD4.CD3$removals == 1),], pch = "*")
+  points(MRF.GvHDpos.CD4.CD3$x[which(MRF.GvHDpos.CD4.CD3$groups != 0),], col = cluster.colours[MRF.GvHDpos.CD4.CD3$groups])
+  points(MRF.GvHDpos.CD4.CD3$x[which(MRF.GvHDpos.CD4.CD3$groups == 0),], col = 'grey')
+  points(MRF.GvHDpos.CD4.CD3$x[which(MRF.GvHDpos.CD4.CD3$removals == 1),], col = 'white')
+
+  par(mfrow = c(1, 1))
+
   
   # Table 2 - GvHD Data
   
