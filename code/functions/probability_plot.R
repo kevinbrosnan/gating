@@ -8,7 +8,11 @@ probability_map <- function(x, data = NULL) {
   x.pos <- rep(1:no.row, times = no.col)
   y.pos <- sort(rep(1:no.col, times = no.row))
   val <- as.vector(x)
-  val.col <- as.factor(val)
+  val.col <- ifelse(val < 0.1, colours.scale[1],
+                    ifelse(val < 0.5, colours.scale[2],
+                           ifelse(val == 0.5, colours.scale[3],
+                                  ifelse(val < 0.9, colours.scale[4],
+                                         colours.scale[5]))))
   
   par(pty = "s")
   plot(x.pos, y.pos, type = "n", ylim = c(-0.5, no.col), xlim = c(-0.5, no.col), las = 1)
