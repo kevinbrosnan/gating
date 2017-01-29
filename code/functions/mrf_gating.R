@@ -37,8 +37,7 @@ mrf_gating <- function(x, min = 0, max = 1023, temperature) {
   
   # Output to return to the user
   output <- structure(list(x = x, groups = groups, probabilities = probs,
-                           removals = removals, grid.probs = mrf.grid$prob,
-                           state = mrf.grid$state), 
+                           removals = removals, grid.probs = mrf.grid$prob), 
                       class = "mrf_gating")
   
   return(output)

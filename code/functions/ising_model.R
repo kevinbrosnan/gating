@@ -64,8 +64,8 @@ ising_model <- function(x, temp = 4) {
     neigh.zeros <- neigh_system(current.state, value = 0,
                                 dimension = dimension)
 
-    prob.final.ones <- exp((1/temp) * neigh.ones)
-    prob.final.zeros <- exp((1/temp) * neigh.zeros)
+    prob.final.ones <- exp( neigh.ones)
+    prob.final.zeros <- exp(neigh.zeros)
     prob <- prob.final.ones / (prob.final.ones + prob.final.zeros)
     
     # Are we finished annealing?

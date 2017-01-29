@@ -43,6 +43,7 @@
   source(paste0(gh.code, "neigh_system.R"))
   source(paste0(gh.code, "neighbours.R"))
   source(paste0(gh.code, "unmake_grid.R"))
+  source(paste0(gh.code, "probability_plot.R"))
   
   # Colour Schemes
   cluster.colours <- c("red", "green", "blue", "purple", "orange", "yellow")
