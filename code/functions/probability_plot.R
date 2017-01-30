@@ -1,4 +1,4 @@
-probability_map <- function(x, data = NULL) {
+probability_plot <- function(x, data = NULL) {
   
   no.row <- nrow(x)
   no.col <- ncol(x)
