@@ -33,7 +33,7 @@ mrf_gating <- function(x, min = 0, max = 1023, temperature) {
   groups <- unmake_grid(x = groups.grid, original = x, min = min, max = max)
   
   # Output to return to the user
-  output <- structure(list(x = x, groups = groups, probabilities = probs,
+  output <- structure(list(x = x, groups = groups,
                            removals = removals, grid.probs = mrf.grid$prob), 
                       class = "mrf_gating")
   
