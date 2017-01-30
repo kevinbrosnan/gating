@@ -1,20 +1,21 @@
-ising_model <- function(x, temp = 4) {
+ising_model <- function(prob, temp = 4) {
   
   # Dimensions of input matrix
-  dimension <- nrow(x)
+  dimension <- nrow(prob)
   
   # Simulated Annealing Stopping Criterion
   SA.stop <- FALSE
   SA.update <- FALSE
   SA.updates <- 0
   
+  # Holding matrices
+  current.state <- matrix(1, nrow = dimension, ncol = dimension)
+  prob <- prob
+  current.state[which(prob < 0.2)] <- 0
+  
   # Defined Constant
   ln.alpha <- log(runif(1))
-  energy.system <- sum(energy_system(x, dimension = dimension))
-  
-  # Holding matrices
-  current.state <- x
-  prob <- matrix(1, nrow = dimension, ncol = dimension)
+  energy.system <- sum(energy_system(current.state, dimension = dimension))
   
   while (SA.stop != TRUE) {
     
@@ -46,14 +47,14 @@ ising_model <- function(x, temp = 4) {
         current.state[lin.index] <- 1 - current.state[lin.index]
         
         # Update the temperature?
-        if (abs(energy.change/energy.system) < 1e-3) {
+        if (abs(energy.change/energy.system) < 1) {
           SA.update <- TRUE
         }
       } else if (ln.alpha <= -energy.change/temp.cur) {
         current.state[lin.index] <- 1 - current.state[lin.index]
         
         # Update the temperature?
-        if (abs(energy.change/energy.system) < 1e-3) {
+        if (abs(energy.change/energy.system) < 1) {
           SA.update <- TRUE
         }
       }
@@ -64,7 +65,7 @@ ising_model <- function(x, temp = 4) {
     neigh.zeros <- neigh_system(current.state, value = 0,
                                 dimension = dimension)
 
-    prob.final.ones <- exp( neigh.ones)
+    prob.final.ones <- exp(neigh.ones)
     prob.final.zeros <- exp(neigh.zeros)
     prob <- prob.final.ones / (prob.final.ones + prob.final.zeros)
     
@@ -74,6 +75,15 @@ ising_model <- function(x, temp = 4) {
       prob.change <- max(abs(prob - prob.previous))
     }
   }
+  
+  neigh.ones <- neigh_system(current.state, value = 1,
+                             dimension = dimension)
+  neigh.zeros <- neigh_system(current.state, value = 0,
+                              dimension = dimension)
+  
+  prob.final.ones <- exp(neigh.ones)
+  prob.final.zeros <- exp(neigh.zeros)
+  prob <- prob.final.ones / (prob.final.ones + prob.final.zeros)
   
   output <- structure(list(prob = prob, temperature = temp.cur, 
                            state = current.state, prob.change = prob.change))

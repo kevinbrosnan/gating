@@ -13,14 +13,14 @@ mrf_gating <- function(x, min = 0, max = 1023, temperature) {
   # Markov Random Field Approach
     # 64 x 64 Grid
     mat.grid <- grid_red(mat.grid, red.dim = 64, dimension)
-    mrf.grid <- ising_model(mat.grid[[1]], temp = temperature)
+    mrf.grid <- ising_model(prob = mat.grid[[1]], temp = temperature)
     
     # 128 x 128 Grid
-    mrf.grid <- grid_inc(x = mrf.grid$state, nrow(mrf.grid$state))
-    mrf.grid <- ising_model(mrf.grid, temp = temperature)
-    
+    mrf.grid.prob <- grid_inc(x = spatial_smooth(mrf.grid$prob), nrow(mrf.grid$prob))
+    mrf.grid <- ising_model(prob = mrf.grid.prob, temp = temperature)
+
     # 256 x 256 Grid
-    mrf.grid <- grid_inc(x = mrf.grid$state, nrow(mrf.grid$state))
+    mrf.grid <- grid_inc(x = spatial_smooth(mrf.grid$prob), nrow(mrf.grid$prob))
     mrf.grid <- ising_model(mrf.grid, temp = temperature)
 
   # Requirement to use connected components labelling
@@ -33,7 +33,7 @@ mrf_gating <- function(x, min = 0, max = 1023, temperature) {
   groups <- unmake_grid(x = groups.grid, original = x, min = min, max = max)
   
   # Output to return to the user
-  output <- structure(list(x = x, groups = groups,
+  output <- structure(list(x = x, groups = groups, state = mrf.grid$state,
                            removals = removals, grid.probs = mrf.grid$prob), 
                       class = "mrf_gating")
   
