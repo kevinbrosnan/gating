@@ -37,8 +37,8 @@ mrf_gating <- function(x, min = 0, max = 1023, temperature) {
   groups[which(removals == 1)] <- NA
   
   # Output to return to the user
-  output <- structure(list(x = x, groups = groups, removals = removals, 
-                           probs = probs, grid.probs = grid.probs), 
+  output <- structure(list(x = x, groups = groups, removals = removals,
+                           grid.probs = spatial_smooth(mrf.grid$prob)), 
                       class = "mrf_gating")
   
   return(output)
