@@ -12,6 +12,7 @@ ising_model <- function(prob, temp = 4) {
   current.state <- matrix(1, nrow = dimension, ncol = dimension)
   prob <- prob
   current.state[which(prob < 0.2)] <- 0
+  current.state[which(prob > 0.8)] <- 1
   
   # Defined Constant
   ln.alpha <- log(runif(1))

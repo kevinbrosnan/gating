@@ -44,6 +44,7 @@
   source(paste0(gh.code, "neighbours.R"))
   source(paste0(gh.code, "unmake_grid.R"))
   source(paste0(gh.code, "probability_plot.R"))
+  source(paste0(gh.code, "spatial_smooth.R"))
   
   # Colour Schemes
   cluster.colours <- c("red", "green", "blue", "purple", "orange", "yellow")
@@ -80,25 +81,15 @@
   Lo.initial <- flowClust(rituximab, varNames = c("FSC.H", "SSC.H"), K = 1, 
                           B = 100, z.cutoff = 0.5)
   
-  MRF.initial <- mrf_gating(rituximab[, c("FSC.H", "SSC.H")], temperature = 4)
-  
+  MRF.initial <- mrf_gating(rituximab[, c("FSC.H", "SSC.H")], temperature = 2)
   par(mfrow = c(1,2))
   par(pty = "s")
   plot(Lo.initial, data = rituximab, xlab = "FSC-Height", 
        ylab = "SSC-Height", las = 1, 
-       main = "(a) t mixture with Box-Cox", show.outliers = TRUE)
-  points(rituximab[which(Lo.initial@flagOutliers), c(1,2)], 
-         col = gray(3/4), pch = 20)
-  
-  par(pty = "s")
-  
-  plot(MRF.initial$x, type = "n", las = 1, xlab = "FSC-Height", ylab = "SSC-Height",
+       main = "(a) t mixture with Box-Cox", show.outliers = TRUE,
+       pch.outliers = 20)
+  plot(MRF.initial, type = "n", las = 1, xlab = "FSC-Height", ylab = "SSC-Height",
   		main = "(b) Markov random field")
-  points(MRF.initial$x[which(MRF.initial$removals == 1),], pch = "*")
-  points(MRF.initial$x[which(MRF.initial$groups != 0),], col = MRF.initial$groups)
-  points(MRF.initial$x[which(MRF.initial$groups == 0),], col = 'grey')
-  points(MRF.initial$x[which(MRF.initial$removals == 1),], col = 'white')
-
   par(mfrow = c(1, 1))
   
   # Figure 2 - Rituximab Data 7-AAD v Anti-BrdU
