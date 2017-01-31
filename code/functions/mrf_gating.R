@@ -30,12 +30,7 @@ mrf_gating <- function(x, min = 0, max = 1023, temperature) {
   groups.grid <- SDMTools::ConnCompLabel(mrf.grid.round)
   
   # Scale up the grids to the correct dimension of the data
-  grid.probs <- grid_inc(grid_inc(spatial_smooth(mrf.grid$prob), 256), 512)
   groups.grid <- grid_inc(grid_inc(groups.grid, 256), 512)
-  probs <- rep(0, times = nrow(x))
-  for (i in 1:length(probs)) {
-    probs[i] <- grid.probs[x[i, 1], x[i, 2]]
-  }
     
   # Identify the groups and return to data frame format
   groups <- unmake_grid(x = groups.grid, original = x, min = min, max = max)
@@ -71,8 +66,9 @@ plot.mrf_gating <- function(object, xlab = NULL, ylab = NULL, main = NULL) {
   
   # Initilise Plot
   par(pty = "s")
-  plot(object$x, type = "n", las = 1, xlab = xlab, ylab = ylab,
-       main = main, xlim = c(-0.5, no.row), ylim = c(-0.5, no.col))
+  plot(0, type = "n", las = 1, xlab = xlab, ylab = ylab,
+       main = main, xlim = c(-0.5, no.row), ylim = c(-0.5, no.col),
+       axes = FALSE)
   
   # Add probability map layer
   colours.scale <- c("yellow", "orange", "red")
@@ -98,7 +94,7 @@ plot.mrf_gating <- function(object, xlab = NULL, ylab = NULL, main = NULL) {
   points.characters <- ifelse(is.na(object$groups), 8, 19)
   points.colours <- ifelse(is.na(object$groups), "grey",
                          ifelse(object$groups == 0, "grey", "black"))
-  points(object$x, col = points.colours, pch = points.characters, cex = 0.5)
+  points(object$x/4, col = points.colours, pch = points.characters, cex = 0.5)
   
   invisible()
 }

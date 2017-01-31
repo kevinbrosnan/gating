@@ -88,7 +88,7 @@
        ylab = "SSC-Height", las = 1, 
        main = "(a) t mixture with Box-Cox", show.outliers = TRUE,
        pch.outliers = 20)
-  plot(MRF.initial, type = "n", las = 1, xlab = "FSC-Height", ylab = "SSC-Height",
+  plot(MRF.initial, xlab = "FSC-Height", ylab = "SSC-Height",
   		main = "(b) Markov random field")
   par(mfrow = c(1, 1))
   
