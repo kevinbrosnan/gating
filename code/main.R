@@ -46,9 +46,6 @@
   source(paste0(gh.code, "probability_plot.R"))
   source(paste0(gh.code, "spatial_smooth.R"))
   
-  # Colour Schemes
-  cluster.colours <- c("red", "green", "blue", "purple", "orange", "yellow")
-  
 ####--- Exploratory Analysis (Rituximab Data) ------------------------------####
   
   # Manual Gating Example
@@ -81,7 +78,8 @@
   Lo.initial <- flowClust(rituximab, varNames = c("FSC.H", "SSC.H"), K = 1, 
                           B = 100, z.cutoff = 0.5)
   
-  MRF.initial <- mrf_gating(rituximab[, c("FSC.H", "SSC.H")], temperature = 2)
+  MRF.initial <- mrf_gating(rituximab[, c("FSC.H", "SSC.H")], temperature = 3)
+  png('paper/figures/rituximab.png', height = 500, width = 1000)
   par(mfrow = c(1,2))
   par(pty = "s")
   plot(Lo.initial, data = rituximab, xlab = "FSC-Height", 
@@ -91,6 +89,7 @@
   plot(MRF.initial, xlab = "FSC-Height", ylab = "SSC-Height",
   		main = "(b) Markov random field")
   par(mfrow = c(1, 1))
+  dev.off()
   
   # Figure 2 - Rituximab Data 7-AAD v Anti-BrdU
   Lo.gate <- rituximab[rituximab %in% Lo.initial, c("FL3.H", "FL1.H")]
