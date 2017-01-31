@@ -13,7 +13,7 @@ mrf_gating <- function(x, min = 0, max = 1023, temperature) {
   # Markov Random Field Approach
     # 64 x 64 Grid
     mat.grid <- grid_red(mat.grid, red.dim = 64, dimension)
-    mrf.grid <- ising_model(prob = mat.grid[[1]], temp = 1)
+    mrf.grid <- ising_model(prob = mat.grid[[1]], temp = temperature)
     
     # 128 x 128 Grid
     mrf.grid.prob <- grid_inc(x = spatial_smooth(mrf.grid$prob), nrow(mrf.grid$prob))

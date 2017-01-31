@@ -78,7 +78,7 @@
   Lo.initial <- flowClust(rituximab, varNames = c("FSC.H", "SSC.H"), K = 1, 
                           B = 100, z.cutoff = 0.5)
   
-  MRF.initial <- mrf_gating(rituximab[, c("FSC.H", "SSC.H")], temperature = 3)
+  MRF.initial <- mrf_gating(rituximab[, c("FSC.H", "SSC.H")], temperature = 4)
   png('paper/figures/rituximab.png', height = 500, width = 1000)
   par(mfrow = c(1,2))
   par(pty = "s")
@@ -98,22 +98,17 @@
   MRF.gate <- rituximab[which(MRF.initial$groups == 1), c("FL3.H", "FL1.H")]
   MRF.7AAD_antiBrdU <- mrf_gating(MRF.gate, temperature = 4)
   
+  png('paper/figures/rituximab_stagetwo.png', height = 500, width = 1000)
   par(mfrow = c(1,2))
   par(pty = "s")
-  plot(Lo.7AAD_antiBrdU, data = Lo.gate, ylab = 'Anti-BrdU FITC', 
-       xlab = '7 AAD', main = "(a) t mixture with Box-Cox", 
-       las = 1, show.outliers = FALSE)
-  points(Lo.gate[which(Lo.7AAD_antiBrdU@flagOutliers),], 
-         col = gray(3/4), pch = 20)
-  
-  par(pty = 's')
-  plot(MRF.7AAD_antiBrdU$x, type = "n", las = 1, xlab = "7 AAD", ylab = "Anti-BrdU FITC",
-  		main = "(b) Markov random field")
-  points(MRF.7AAD_antiBrdU$x[which(MRF.7AAD_antiBrdU$removals == 1),], pch = "*")
-  points(MRF.7AAD_antiBrdU$x[which(MRF.7AAD_antiBrdU$groups != 0),], col = cluster.colours[MRF.7AAD_antiBrdU$groups])
-  points(MRF.7AAD_antiBrdU$x[which(MRF.7AAD_antiBrdU$groups == 0),], col = 'grey')
+  plot(Lo.7AAD_antiBrdU, data = Lo.gate, xlab = "FSC-Height", 
+       ylab = "SSC-Height", las = 1, 
+       main = "(a) t mixture with Box-Cox", show.outliers = TRUE,
+       pch.outliers = 20)
+  plot(MRF.7AAD_antiBrdU, xlab = "FSC-Height", ylab = "SSC-Height",
+       main = "(b) Markov random field")
   par(mfrow = c(1, 1))
-  
+  dev.off()
   
   # Table 1 - Rituximab Data
   
