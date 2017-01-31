@@ -63,12 +63,15 @@ plot.mrf_gating <- function(object, xlab = NULL, ylab = NULL, main = NULL) {
   
   no.row <- nrow(object$grid.probs)
   no.col <- ncol(object$grid.probs)
+  axis.pos <- c(0, 200, 400, 600, 800, 1000) * (255/1023)
   
   # Initilise Plot
   par(pty = "s")
   plot(0, type = "n", las = 1, xlab = xlab, ylab = ylab,
        main = main, xlim = c(-0.5, no.row), ylim = c(-0.5, no.col),
-       axes = FALSE)
+       xaxt = "n", yaxt = "n", bty = "o")
+  axis(side = 1, at = axis.pos, labels = c(0, 200, 400, 600, 800, 1000))
+  axis(side = 2, at = axis.pos, labels = c(0, 200, 400, 600, 800, 1000), las = 1)
   
   # Add probability map layer
   colours.scale <- c("yellow", "orange", "red")
@@ -94,7 +97,7 @@ plot.mrf_gating <- function(object, xlab = NULL, ylab = NULL, main = NULL) {
   points.characters <- ifelse(is.na(object$groups), 8, 19)
   points.colours <- ifelse(is.na(object$groups), "grey",
                          ifelse(object$groups == 0, "grey", "black"))
-  points(object$x/4, col = points.colours, pch = points.characters, cex = 0.5)
+  points(object$x * (255/1023), col = points.colours, pch = points.characters, cex = 0.5)
   
   invisible()
 }
