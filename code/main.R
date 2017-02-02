@@ -79,15 +79,19 @@
                           B = 100, z.cutoff = 0.5)
   
   MRF.initial <- mrf_gating(rituximab[, c("FSC.H", "SSC.H")], temperature = 4)
-  png('paper/figures/rituximab.png', height = 500, width = 1000)
-  par(mfrow = c(1,2))
+  
+  png('paper/figures/rituximab.png', height = 500, width = 1500)
+  par(mfrow = c(1,3))
   par(pty = "s")
   plot(Lo.initial, data = rituximab, xlab = "FSC-Height", 
        ylab = "SSC-Height", las = 1, 
        main = "(a) t mixture with Box-Cox", show.outliers = TRUE,
        pch.outliers = 20)
   plot(MRF.initial, xlab = "FSC-Height", ylab = "SSC-Height",
-  		main = "(b) Markov random field")
+  		main = "(b) Markov random field probabilities")
+  plot(MRF.initial$x, xlim = c(0, 1023), ylim = c(0,1023),
+       main = "(c) Markov random field clusters",
+       col = ifelse(MRF.initial$groups == 0, "grey", MRF.initial$groups))
   par(mfrow = c(1, 1))
   dev.off()
   
@@ -98,15 +102,18 @@
   MRF.gate <- rituximab[which(MRF.initial$groups == 1), c("FL3.H", "FL1.H")]
   MRF.7AAD_antiBrdU <- mrf_gating(MRF.gate, temperature = 4)
   
-  png('paper/figures/rituximab_stagetwo.png', height = 500, width = 1000)
-  par(mfrow = c(1,2))
+  png('paper/figures/rituximab_stagetwo.png', height = 500, width = 1500)
+  par(mfrow = c(1,3))
   par(pty = "s")
   plot(Lo.7AAD_antiBrdU, data = Lo.gate, xlab = "FSC-Height", 
        ylab = "SSC-Height", las = 1, 
        main = "(a) t mixture with Box-Cox", show.outliers = TRUE,
        pch.outliers = 20)
   plot(MRF.7AAD_antiBrdU, xlab = "FSC-Height", ylab = "SSC-Height",
-       main = "(b) Markov random field")
+       main = "(b) Markov random field probabilities")
+  plot(MRF.7AAD_antiBrdU$x, xlim = c(0, 1023), ylim = c(0,1023),
+       main = "(c) Markov random fields clusters",
+       col = ifelse(MRF.7AAD_antiBrdU$groups == 0, "grey", MRF.7AAD_antiBrdU$groups))
   par(mfrow = c(1, 1))
   dev.off()
   
@@ -121,40 +128,26 @@
   MRF.GvHDcon.CD4.CD8B <- mrf_gating(GvHD.con[,c("CD4", "CD8b")], temperature = 4)
   MRF.GvHDcon.CD4.CD3 <- mrf_gating(GvHD.con[,c("CD4", "CD3")], temperature = 4)
   
-  
-  par(mfrow = c(2,2))
-
+  png('paper/figures/GvHD_control.png', width = 1500, height = 1000)
+  par(mfrow = c(2,3))
   par(pty = "s")
   plot(Lo.GvHDcon.CD4.CD8B, data = GvHD.con, xlab = "CD4", 
-       ylab = "CD8b", las = 1, 
+       ylab = "CD8b", las = 1, pch.outliers = 20,
        main = "(a) t mixture with Box-Cox", show.outliers = TRUE)
-  points(GvHD.con[which(Lo.GvHDcon.CD4.CD8B@flagOutliers), c("CD4","CD8b")], 
-         col = gray(3/4), pch = 20)
-  
-  par(pty = "s")  
-  plot(MRF.GvHDcon.CD4.CD8B$x, type = "n", las = 1, xlab = "CD4", ylab = "CD8b",
-  		main = "(b) Markov random field")
-  points(MRF.GvHDcon.CD4.CD8B$x[which(MRF.GvHDcon.CD4.CD8B$removals == 1),], pch = "*")
-  points(MRF.GvHDcon.CD4.CD8B$x[which(MRF.GvHDcon.CD4.CD8B$groups != 0),], col = cluster.colours[MRF.GvHDcon.CD4.CD8B$groups])
-  points(MRF.GvHDcon.CD4.CD8B$x[which(MRF.GvHDcon.CD4.CD8B$groups == 0),], col = 'grey')
-  points(MRF.GvHDcon.CD4.CD8B$x[which(MRF.GvHDcon.CD4.CD8B$removals == 1),], col = 'white')
-
-  par(pty = "s")
+  plot(MRF.GvHDcon.CD4.CD8B, main = "(b) Markov random field probabilities")
+  plot(MRF.GvHDcon.CD4.CD8B$x, xlim = c(0, 1023), ylim = c(0,1023),
+       main = "(c) Markov random field clusters",
+       col = ifelse(MRF.GvHDcon.CD4.CD8B$groups == 0, "grey", MRF.GvHDcon.CD4.CD8B$groups))
+ 
   plot(Lo.GvHDcon.CD4.CD3, data = GvHD.con, xlab = "CD4", 
-       ylab = "CD3", las = 1, 
-       main = "(a) t mixture with Box-Cox", show.outliers = TRUE)
-  points(GvHD.con[which(Lo.GvHDcon.CD4.CD3@flagOutliers), c("CD4","CD3")], 
-         col = gray(3/4), pch = 20)
-  
-  par(pty = "s")  
-  plot(MRF.GvHDcon.CD4.CD3$x, type = "n", las = 1, xlab = "CD4", ylab = "CD3",
-  		main = "(b) Markov random field")
-  points(MRF.GvHDcon.CD4.CD3$x[which(MRF.GvHDcon.CD4.CD3$removals == 1),], pch = "*")
-  points(MRF.GvHDcon.CD4.CD3$x[which(MRF.GvHDcon.CD4.CD3$groups != 0),], col = cluster.colours[MRF.GvHDcon.CD4.CD3$groups])
-  points(MRF.GvHDcon.CD4.CD3$x[which(MRF.GvHDcon.CD4.CD3$groups == 0),], col = 'grey')
-  points(MRF.GvHDcon.CD4.CD3$x[which(MRF.GvHDcon.CD4.CD3$removals == 1),], col = 'white')
-
+       ylab = "CD3", las = 1, pch.outliers = 20,
+       main = "(d) t mixture with Box-Cox", show.outliers = TRUE)
+  plot(MRF.GvHDcon.CD4.CD3, main = "(e) Markov random field probabilities")
+  plot(MRF.GvHDcon.CD4.CD3$x, xlim = c(0, 1023), ylim = c(0,1023),
+       main = "(f) Markov random field clusters",
+       col = ifelse(MRF.GvHDcon.CD4.CD3$groups == 0, "grey", MRF.GvHDcon.CD4.CD3$groups))
   par(mfrow = c(1, 1))
+  dev.off()
   
   # Figure 4 - GvHD Data Positive Group CD4 v CD8B, CD4 v CD3
   
@@ -164,41 +157,27 @@
   MRF.GvHDpos.CD4.CD8B <- mrf_gating(GvHD.pos[,c("CD4", "CD8b")], temperature = 4)
   MRF.GvHDpos.CD4.CD3 <- mrf_gating(GvHD.pos[,c("CD4", "CD3")], temperature = 4)
   
-  
-  par(mfrow = c(2,2))
-
+  png('paper/figures/GvHD_positive.png', width = 1500, height = 1000)
+  par(mfrow = c(2,3))
   par(pty = "s")
   plot(Lo.GvHDpos.CD4.CD8B, data = GvHD.pos, xlab = "CD4", 
-       ylab = "CD8b", las = 1, 
+       ylab = "CD8b", las = 1, pch.outliers = 20, 
        main = "(a) t mixture with Box-Cox", show.outliers = TRUE)
-  points(GvHD.pos[which(Lo.GvHDpos.CD4.CD8B@flagOutliers), c("CD4","CD8b")], 
-         col = gray(3/4), pch = 20)
+  plot(MRF.GvHDpos.CD4.CD8B, main = "(b) Markov random field probabilities")
+  plot(MRF.GvHDpos.CD4.CD8B$x, xlim = c(0, 1023), ylim = c(0,1023),
+       main = "(c) Markov random field clusters",
+       col = ifelse(MRF.GvHDpos.CD4.CD8B$groups == 0, "grey", MRF.GvHDpos.CD4.CD8B$groups))
   
-  par(pty = "s")  
-  plot(MRF.GvHDpos.CD4.CD8B$x, type = "n", las = 1, xlab = "CD4", ylab = "CD8b",
-  		main = "(b) Markov random field")
-  points(MRF.GvHDpos.CD4.CD8B$x[which(MRF.GvHDpos.CD4.CD8B$removals == 1),], pch = "*")
-  points(MRF.GvHDpos.CD4.CD8B$x[which(MRF.GvHDpos.CD4.CD8B$groups != 0),], col = cluster.colours[MRF.GvHDpos.CD4.CD8B$groups])
-  points(MRF.GvHDpos.CD4.CD8B$x[which(MRF.GvHDpos.CD4.CD8B$groups == 0),], col = 'grey')
-  points(MRF.GvHDpos.CD4.CD8B$x[which(MRF.GvHDpos.CD4.CD8B$removals == 1),], col = 'white')
-
-  par(pty = "s")
   plot(Lo.GvHDpos.CD4.CD3, data = GvHD.pos, xlab = "CD4", 
-       ylab = "CD3", las = 1, 
-       main = "(a) t mixture with Box-Cox", show.outliers = TRUE)
-  points(GvHD.pos[which(Lo.GvHDpos.CD4.CD3@flagOutliers), c("CD4","CD3")], 
-         col = gray(3/4), pch = 20)
+       ylab = "CD3", las = 1, pch.outliers = 20,
+       main = "(d) t mixture with Box-Cox", show.outliers = TRUE)
+  plot(MRF.GvHDpos.CD4.CD3, main = "(e) Markov random field probabilities")
+  plot(MRF.GvHDpos.CD4.CD3$x, xlim = c(0, 1023), ylim = c(0,1023),
+       main = "(f) Markov random field clusters",
+       col = ifelse(MRF.GvHDpos.CD4.CD3$groups == 0, "grey", MRF.GvHDpos.CD4.CD3$groups))
   
-  par(pty = "s")  
-  plot(MRF.GvHDpos.CD4.CD3$x, type = "n", las = 1, xlab = "CD4", ylab = "CD3",
-  		main = "(b) Markov random field")
-  points(MRF.GvHDpos.CD4.CD3$x[which(MRF.GvHDpos.CD4.CD3$removals == 1),], pch = "*")
-  points(MRF.GvHDpos.CD4.CD3$x[which(MRF.GvHDpos.CD4.CD3$groups != 0),], col = cluster.colours[MRF.GvHDpos.CD4.CD3$groups])
-  points(MRF.GvHDpos.CD4.CD3$x[which(MRF.GvHDpos.CD4.CD3$groups == 0),], col = 'grey')
-  points(MRF.GvHDpos.CD4.CD3$x[which(MRF.GvHDpos.CD4.CD3$removals == 1),], col = 'white')
-
   par(mfrow = c(1, 1))
-
+  dev.off()
   
   # Table 2 - GvHD Data
   

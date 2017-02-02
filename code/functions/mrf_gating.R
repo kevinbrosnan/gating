@@ -24,7 +24,7 @@ mrf_gating <- function(x, min = 0, max = 1023, temperature) {
     mrf.grid <- ising_model(spatial_smooth(mrf.grid), temp = temperature)
 
   # Requirement to use connected components labelling
-  mrf.grid.round <- round(spatial_smooth(mrf.grid$prob))
+  mrf.grid.round <- ifelse(spatial_smooth(mrf.grid$prob) > 0.5, 1, 0)
 
   # Connected Components Algorithm
   groups.grid <- SDMTools::ConnCompLabel(mrf.grid.round)
