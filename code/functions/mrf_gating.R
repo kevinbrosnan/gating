@@ -36,9 +36,20 @@ mrf_gating <- function(x, min = 0, max = 1023, temperature, cluster.prob = 0.25)
   groups <- unmake_grid(x = groups.grid, original = x, min = min, max = max)
   groups[which(removals == 1)] <- NA
   
+  # Return the probabilities associated with each cell
+  probs.tmp <- grid_inc(grid_inc(spatial_smooth(mrf.grid$prob), 256), 512)
+  index.original <- (x[,1] + 1) + (max - min + 1) * x[,2]
+  probs <- rep(NA, nrow(x))
+  for (i in 1:length(probs)) {
+    if (!is.na(groups[i]) && groups[i] != 0) {
+      probs[i] <- probs.tmp[[index.original[i]]]
+    }
+  }
+  
   # Output to return to the user
   output <- structure(list(x = x, groups = groups, removals = removals,
-                           grid.probs = spatial_smooth(mrf.grid$prob)), 
+                           grid.probs = spatial_smooth(mrf.grid$prob),
+                           probs = probs), 
                       class = "mrf_gating")
   
   return(output)

@@ -100,17 +100,19 @@
   		main = "(b) Markov random field probabilities")
   plot(MRF.rit$x, xlim = c(0, 1023), ylim = c(0,1023),
        main = "(c) Markov random field clusters", las = 1,
+       xlab = "FSC-Height", ylab = "SSC-Height",
        col = ifelse(MRF.rit$groups == 0, "grey", MRF.rit$groups))
   
-  plot(Lo.rit.stagetwo, data = Lo.rit.gate, xlab = "FSC-Height", 
-       ylab = "SSC-Height", las = 1, 
+  plot(Lo.rit.stagetwo, data = Lo.rit.gate, xlab = "7 AAD", 
+       ylab = "Anti-BrdU FITC", las = 1, 
 	 xlim = c(0, 1023), ylim = c(0, 1023),
        main = "(d) t mixture with Box-Cox", show.outliers = TRUE,
        pch.outliers = 20, cex = 1.5, cex.outliers = 1)
-  plot(MRF.rit.stagetwo, xlab = "FSC-Height", ylab = "SSC-Height",
+  plot(MRF.rit.stagetwo, xlab = "7 AAD", ylab = "Anti-BrdU FITC",
        main = "(e) Markov random field probabilities")
   plot(MRF.rit.stagetwo$x, xlim = c(0, 1023), ylim = c(0,1023),
-       main = "(f) Markov random fields clusters", las = 1,
+       main = "(f) Markov random fields cluster", las = 1,
+       xlab = "7 AAD", ylab = "Anti-BrdU FITC",
        col = ifelse(MRF.rit.stagetwo$groups == 0, "grey", 
                     MRF.rit.stagetwo$groups))
   par(mfrow = c(1, 1))
@@ -118,6 +120,51 @@
   
   # Table 1 - Rituximab Data
   
+    # t-mixtures - (stage two isn't complete due to cluster number changing on runs)
+    Lo.rit.table <- list(cluster.count = sum(!Lo.rit@flagOutliers, na.rm = TRUE), 
+                         cluster.percent = round((sum(!Lo.rit@flagOutliers, na.rm = TRUE)/1545) * 100, digits = 2),
+                         undefined.count = sum(Lo.rit@flagOutliers, na.rm = TRUE),
+                         undefined.percent = round((sum(Lo.rit@flagOutliers, na.rm = TRUE)/1545) * 100, digits = 2),
+                         doublets.count = length(which(is.na(Lo.rit@z))),
+                         doublets.percent = round((length(which(is.na(Lo.rit@z)))/1545) * 100, digits = 2)
+    )
+    Lo.rit.table.stagetwo <- list(cluster.count = table(Lo.rit.stagetwo@label[which(!Lo.rit.stagetwo@flagOutliers)]), 
+                         cluster.percent = round((table(Lo.rit.stagetwo@label[which(!Lo.rit.stagetwo@flagOutliers)])/1545) * 100, digits = 2),
+                         undefined.count = sum(Lo.rit.stagetwo@flagOutliers, na.rm = TRUE),
+                         undefined.percent = round((sum(Lo.rit.stagetwo@flagOutliers, na.rm = TRUE)/1545) * 100, digits = 2)
+    )
+    
+    # Markov Random Field
+
+    MRF.rit.table <- list(cluster.count = sum(MRF.rit$groups == 1, na.rm = TRUE), 
+                         cluster.percent = round((sum(MRF.rit$groups == 1, na.rm = TRUE)/1545) * 100, digits = 2),
+                         undefined.count = sum(MRF.rit$groups == 0, na.rm = TRUE),
+                         undefined.percent = round((sum(MRF.rit$groups == 0, na.rm = TRUE)/1545) * 100, digits = 2),
+                         doublets.count = sum(MRF.rit$removals, na.rm = TRUE),
+                         doublets.percent = round((sum(MRF.rit$removals, na.rm = TRUE)/1545) * 100, digits = 2),
+                         cluster.level = c(length(which(MRF.rit$probs < 0.5)),
+                                           length(which(MRF.rit$probs < 0.75)) - length(which(MRF.rit$probs < 0.5)),
+                                           length(which(MRF.rit$probs >= 0.75)))
+    )
+    
+    MRF.rit.stagetwo.table <- list(cluster.count = as.vector(table(MRF.rit.stagetwo$groups))[-1], 
+                          cluster.percent = as.vector(round((table(MRF.rit.stagetwo$groups)[-1]/1545) * 100, digits = 2)),
+                          undefined.count = sum(MRF.rit.stagetwo$groups == 0, na.rm = TRUE),
+                          undefined.percent = round((sum(MRF.rit.stagetwo$groups == 0, na.rm = TRUE)/1545) * 100, digits = 2),
+                          doublets.count = sum(MRF.rit.stagetwo$removals, na.rm = TRUE),
+                          doublets.percent = round((sum(MRF.rit.stagetwo$removals, na.rm = TRUE)/1545) * 100, digits = 2),
+                          cluster.level = list(low = as.vector(by(MRF.rit.stagetwo$probs,
+                                                                  as.factor(MRF.rit.stagetwo$groups),
+                                                                  function(x) length(which(x < 0.5))))[-1],
+                                               medium = as.vector(by(MRF.rit.stagetwo$probs,
+                                                                     as.factor(MRF.rit.stagetwo$groups),
+                                                                     function(x) length(which(x < 0.75)) - length(which(x < 0.5))))[-1],
+                                               high = as.vector(by(MRF.rit.stagetwo$probs,
+                                                                   as.factor(MRF.rit.stagetwo$groups),
+                                                                   function(x) length(which(x >= 0.75))))[-1]
+                                            )
+    )
+    
   
   # Figure 3 - GvHD Data Control Group CD4 v CD8B, CD4 v CD3
   
