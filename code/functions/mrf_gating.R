@@ -1,4 +1,4 @@
-mrf_gating <- function(x, min = 0, max = 1023, temperature) {
+mrf_gating <- function(x, min = 0, max = 1023, temperature, cluster.prob = 0.25) {
   
   # Put the two variables of interest in an NxN matrix (field)  
   mat.grid <- make_grid(x, min = min, max = max)
@@ -24,7 +24,7 @@ mrf_gating <- function(x, min = 0, max = 1023, temperature) {
     mrf.grid <- ising_model(spatial_smooth(mrf.grid), temp = temperature)
 
   # Requirement to use connected components labelling
-  mrf.grid.round <- ifelse(spatial_smooth(mrf.grid$prob) > 0.5, 1, 0)
+  mrf.grid.round <- ifelse(spatial_smooth(mrf.grid$prob) > cluster.prob, 1, 0)
 
   # Connected Components Algorithm
   groups.grid <- SDMTools::ConnCompLabel(mrf.grid.round)
@@ -94,10 +94,10 @@ plot.mrf_gating <- function(object, xlab = NULL, ylab = NULL, main = NULL) {
   }
   
   # Add points coloured by cluster
-  points.characters <- ifelse(is.na(object$groups), 8, 19)
+  points.characters <- ifelse(is.na(object$groups), 8, 1)
   points.colours <- ifelse(is.na(object$groups), "grey",
                          ifelse(object$groups == 0, "grey", "black"))
-  points(object$x * (255/1023), col = points.colours, pch = points.characters, cex = 0.5)
+  points(object$x * (255/1023), col = points.colours, pch = points.characters, cex = 0.2)
   
   invisible()
 }
